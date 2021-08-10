@@ -2,7 +2,7 @@
 
 namespace Jdefez\Graphql;
 
-class Field extends Query
+class Field extends Node
 {
     public string $name;
 
@@ -13,44 +13,29 @@ class Field extends Query
         $this->name = $name;
     }
 
-    public static function setName(string $name): Query
+    public static function setName(string $name): Field
     {
         return new self($name);
     }
 
-    public function setArguments(array $arguments): Query
+    public function setArguments(array $arguments): Field
     {
         $this->arguments = $arguments;
 
         return $this;
     }
 
-    public function toString(): string
+    public function addField(Field $field): Field
     {
-        $return = '';
+        parent::addField($field);
 
-        if ($this->hasFields()) {
-            $return .= '- ' . $this->name;
-
-            if ($this->hasArguments()) {
-                // todo: render arguments
-            }
-
-            $return . ' {' . PHP_EOL;
-            foreach ($this->fields as $field) {
-                $return .= $field->toString();
-            }
-            $return .= '}' . PHP_EOL;
-
-        } else {
-            $return .= '- ' . $this->name . PHP_EOL;
-        }
-
-        return $return;
+        return $this;
     }
 
-    public function hasArguments(): bool
+    public function addFields(array $fields): Field
     {
-        return ! empty($this->arguments);
+        parent::addFields($fields);
+
+        return $this;
     }
 }
