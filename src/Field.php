@@ -6,8 +6,6 @@ class Field extends Node
 {
     public string $name;
 
-    public array $arguments = [];
-
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -20,7 +18,7 @@ class Field extends Node
 
     public function setArguments(array $arguments): Field
     {
-        $this->arguments = $arguments;
+        parent::setArguments($arguments);
 
         return $this;
     }

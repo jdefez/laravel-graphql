@@ -6,14 +6,12 @@ use Jdefez\Graphql\Field;
 use Jdefez\Graphql\QueryBuilder;
 
 $query = QueryBuilder::query()
-    ->addField(Field::setName('trunc')
-        //todo ->setArguments([])
+    ->addField(Field::setName('user')
+        ->setArguments(['id' => 1])
         ->addFields([
-            Field::setName('leaf 1'),
-                //todo ->setArguments([])
-            Field::setName('leaf 2')
-                ->addField(Field::setName('bee')),
-            Field::setName('leaf 3')
+            Field::setName('id'),
+            Field::setName('name'),
+            Field::setName('email')
         ])
     );
 
