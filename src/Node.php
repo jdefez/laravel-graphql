@@ -4,18 +4,37 @@ namespace Jdefez\Graphql;
 
 class Node
 {
+    public string $name;
+
     public array $fields = [];
 
-    public function addFields(array $fields)
+    public ?Arguments $arguments = null;
+
+    public function __construct(?string $name = null, ?array $arguments = null)
+    {
+        if ($name) {
+            $this->name = $name;
+        }
+
+        if ($arguments) {
+            $this->setArguments($arguments);
+        }
+    }
+
+    public function addField(Field $field): Node
+    {
+        array_push($this->fields, $field);
+
+        return $this;
+    }
+
+    public function addFields(array $fields): Node
     {
         foreach ($fields as $field) {
             $this->addField($field);
         }
-    }
 
-    public function addField(Field $field)
-    {
-        array_push($this->fields, $field);
+        return $this;
     }
 
     public function setArguments(array $arguments): Node
@@ -23,11 +42,6 @@ class Node
         $this->arguments = new Arguments($arguments);
 
         return $this;
-    }
-
-    public function hasArguments(): bool
-    {
-        return ! is_null($this->arguments);
     }
 
     public function toString(): string
@@ -52,6 +66,11 @@ class Node
         }
 
         return $return;
+    }
+
+    protected function hasArguments(): bool
+    {
+        return ! is_null($this->arguments);
     }
 
     protected function hasFields(): bool
