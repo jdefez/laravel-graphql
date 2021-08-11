@@ -9,6 +9,26 @@ class QueryBuilder extends Node
         return new self();
     }
 
+    public function __call(string $name, ?array $arguments = null): QueryBuilder
+    {
+        $callback = null;
+        if ($arguments
+            && is_callable($arguments[count($arguments) - 1])
+        ) {
+            $callback = array_pop($arguments);
+            $arguments = $arguments[0];
+        }
+
+        $field = new Field($name, $arguments);
+        $this->addField($field);
+
+        if ($callback) {
+            $callback($field);
+        }
+
+        return $this;
+    }
+
     public function toString(): string
     {
         $return = 'QUERY {' . PHP_EOL;

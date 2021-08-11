@@ -8,4 +8,12 @@ class Field extends Node
     {
         return new self($name);
     }
+
+    public function __call(string $name, ?array $arguments = null): Node
+    {
+        $field = new Field($name, $arguments);
+        $this->addField($field);
+
+        return $this;
+    }
 }
