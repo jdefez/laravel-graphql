@@ -28,6 +28,21 @@ class Node
         return $this;
     }
 
+    public function extractCallback(?array &$arguments = null): ?callable
+    {
+        $callback = null;
+        if (! empty($arguments)
+            && is_callable($arguments[count($arguments) - 1])
+        ) {
+            $callback = array_pop($arguments);
+            if (isset($arguments[0])) {
+                $arguments = $arguments[0];
+            }
+        }
+
+        return $callback;
+    }
+
     public function setArguments(array $arguments): Node
     {
         $this->arguments = new Arguments($arguments);

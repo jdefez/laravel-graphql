@@ -11,17 +11,7 @@ class QueryBuilder extends Node
 
     public function __call(string $name, ?array $arguments = null): QueryBuilder
     {
-        // todo: refactor cf. Field use setArguments
-        $callback = null;
-        if (! empty($arguments)
-            && is_callable($arguments[count($arguments) - 1])
-        ) {
-            $callback = array_pop($arguments);
-            if (isset($arguments[0])) {
-                $arguments = $arguments[0];
-            }
-        }
-
+        $callback = $this->extractCallback($arguments);
         $field = new Field($name, $arguments);
         $this->addField($field);
 

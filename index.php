@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 use Jdefez\Graphql\Field;
 use Jdefez\Graphql\QueryBuilder;
 
-$query = QueryBuilder::query()
+echo QueryBuilder::query()
     ->user(['id' => 1], function (Field $field) {
         $field->id()
             ->name()
@@ -18,5 +18,3 @@ $query = QueryBuilder::query()
                 ->city();
         });
     });
-
-echo $query;
