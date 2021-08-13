@@ -10,13 +10,13 @@ $query = QueryBuilder::query()
         $field->id()
             ->name()
             ->email();
-        // todo: test children
     })
-    ->address(function (Field $field) {
-        $field->street()
-            ->zip()
-            ->city();
-        // todo: test children
+    ->addresses(function (Field $field) {
+        $field->data(function(Field $field) {
+            $field->street()
+                ->zip()
+                ->city();
+        });
     });
 
 echo $query;

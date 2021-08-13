@@ -28,15 +28,6 @@ class Node
         return $this;
     }
 
-    public function addFields(array $fields): Node
-    {
-        foreach ($fields as $field) {
-            $this->addField($field);
-        }
-
-        return $this;
-    }
-
     public function setArguments(array $arguments): Node
     {
         $this->arguments = new Arguments($arguments);
