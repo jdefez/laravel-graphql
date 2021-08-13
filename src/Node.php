@@ -10,6 +10,8 @@ class Node
 
     public ?Arguments $arguments = null;
 
+    protected ?Node $parent = null;
+
     public function __construct(?string $name = null, ?array $arguments = null)
     {
         if ($name) {
@@ -55,7 +57,9 @@ class Node
         $return = '';
 
         if ($this->hasFields()) {
-            $return .= $this->name;
+            $depth = $this->getParentsCount($this->parent);
+            //$return .= $this->indent($this->name . "(" . $depth . ")", $depth);
+            $return .= $this->indent($this->name, $depth);
 
             if ($this->hasArguments()) {
                 $return .= $this->arguments->toString();
@@ -65,13 +69,42 @@ class Node
             foreach ($this->fields as $field) {
                 $return .= $field->toString();
             }
-            $return .= '}' . PHP_EOL;
+            $return .= $this->indent('}', $depth) . PHP_EOL;
 
         } else {
-            $return .= $this->name . PHP_EOL;
+            $depth = $this->getParentsCount($this->parent);
+            //$return .= $this->indent($this->name . "(" . $depth . ")", $depth) . PHP_EOL;
+            $return .= $this->indent($this->name, $depth) . PHP_EOL;
         }
 
         return $return;
+    }
+
+    protected function indent(string $string, int $depth): string
+    {
+        $len = $depth * 2;
+        $len += strlen($string);
+        return str_pad($string, $len, " ", STR_PAD_LEFT);
+    }
+
+    protected function hasParent(): bool
+    {
+        return ! is_null($this->parent);
+    }
+
+    protected function getParentsCount(Node $parent): int
+    {
+        $count = 1;
+        if ($parent->hasParent()) {
+            $count ++;
+            $this->getParentsCount($parent->parent);
+        }
+        return $count;
+    }
+
+    protected function setParent(Node $parent): void
+    {
+        $this->parent = $parent;
     }
 
     protected function hasArguments(): bool

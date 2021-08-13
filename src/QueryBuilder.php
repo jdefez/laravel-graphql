@@ -13,6 +13,7 @@ class QueryBuilder extends Node
     {
         $callback = $this->extractCallback($arguments);
         $field = new Field($name, $arguments);
+        $field->setParent($this);
         $this->addField($field);
 
         if ($callback) {
@@ -22,7 +23,7 @@ class QueryBuilder extends Node
         return $this;
     }
 
-    public function toString(): string
+    public function toString(bool $ugglify = true): string
     {
         $return = 'QUERY {' . PHP_EOL;
         foreach ($this->fields as $field) {
@@ -30,7 +31,17 @@ class QueryBuilder extends Node
         }
         $return .= '}';
 
+        if ($ugglify) {
+            $return = str_replace(PHP_EOL, '', $return);
+            $return = preg_replace('#\s+#', ' ', $return);
+        }
+
         return $return;
+    }
+
+    public function dump(): string
+    {
+        return $this->toString(false);
     }
 
     public function __toString(): string

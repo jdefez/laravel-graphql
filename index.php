@@ -5,16 +5,18 @@ require 'vendor/autoload.php';
 use Jdefez\Graphql\Field;
 use Jdefez\Graphql\QueryBuilder;
 
-echo QueryBuilder::query()
-    ->user(['id' => 1], function (Field $field) {
-        $field->id()
+$query = QueryBuilder::query()
+    ->user(['id' => 1], function (Field $user) {
+        $user->id()
             ->name()
             ->email();
     })
-    ->addresses(function (Field $field) {
-        $field->data(function(Field $field) {
-            $field->street()
+    ->addresses(function (Field $addresses) {
+        $addresses->data(function(Field $data) {
+            $data->street()
                 ->zip()
                 ->city();
         });
     });
+
+echo $query->dump();

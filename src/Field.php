@@ -13,6 +13,7 @@ class Field extends Node
     {
         $callback = $this->extractCallback($arguments);
         $field = new Field($name, $arguments);
+        $field->setParent($this);
         $this->addField($field);
 
         if ($callback) {
