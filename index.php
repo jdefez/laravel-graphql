@@ -12,7 +12,7 @@ $query = QueryBuilder::query()
             ->email();
     })
     ->addresses(function (Field $addresses) {
-        $addresses->data(function(Field $data) {
+        $addresses->data(function (Field $data) {
             $data->street()
                 ->zip()
                 ->city();

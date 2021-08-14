@@ -4,7 +4,7 @@ namespace Jdefez\Graphql;
 
 class Node
 {
-    public string $name;
+    public ?string $name = null;
 
     public array $fields = [];
 
@@ -21,6 +21,20 @@ class Node
         if ($arguments) {
             $this->setArguments($arguments);
         }
+    }
+
+    public function __call(string $name, ?array $arguments = null): Node
+    {
+        $callback = $this->extractCallback($arguments);
+        $field = new Field($name, $arguments);
+        $field->setParent($this);
+        $this->addField($field);
+
+        if ($callback) {
+            $callback($field);
+        }
+
+        return $this;
     }
 
     public function addField(Field $field): Node
@@ -57,8 +71,7 @@ class Node
         $return = '';
 
         if ($this->hasFields()) {
-            $depth = $this->getParentsCount($this->parent);
-            //$return .= $this->indent($this->name . "(" . $depth . ")", $depth);
+            $depth = $this->getParentsCount($this);
             $return .= $this->indent($this->name, $depth);
 
             if ($this->hasArguments()) {
@@ -72,8 +85,7 @@ class Node
             $return .= $this->indent('}', $depth) . PHP_EOL;
 
         } else {
-            $depth = $this->getParentsCount($this->parent);
-            //$return .= $this->indent($this->name . "(" . $depth . ")", $depth) . PHP_EOL;
+            $depth = $this->getParentsCount($this);
             $return .= $this->indent($this->name, $depth) . PHP_EOL;
         }
 
@@ -92,12 +104,12 @@ class Node
         return ! is_null($this->parent);
     }
 
-    protected function getParentsCount(Node $parent): int
+    protected function getParentsCount(Node $child): int
     {
-        $count = 1;
-        if ($parent->hasParent()) {
+        $count = 0;
+        while ($child->hasParent()) {
             $count ++;
-            $this->getParentsCount($parent->parent);
+            $child = $child->parent;
         }
         return $count;
     }

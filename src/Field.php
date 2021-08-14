@@ -9,17 +9,17 @@ class Field extends Node
         return new self($name);
     }
 
-    public function __call(string $name, ?array $arguments = null): Node
-    {
-        $callback = $this->extractCallback($arguments);
-        $field = new Field($name, $arguments);
-        $field->setParent($this);
-        $this->addField($field);
+    //public function __call(string $name, ?array $arguments = null): Node
+    //{
+        //$callback = $this->extractCallback($arguments);
+        //$field = new Field($name, $arguments);
+        //$field->setParent($this);
+        //$this->addField($field);
 
-        if ($callback) {
-            $callback($field);
-        }
+        //if ($callback) {
+            //$callback($field);
+        //}
 
-        return $this;
-    }
+        //return $this;
+    //}
 }
