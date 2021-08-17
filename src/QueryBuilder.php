@@ -2,7 +2,7 @@
 
 namespace Jdefez\Graphql;
 
-class QueryBuilder extends Node
+class QueryBuilder extends Field
 {
     public static function query(): QueryBuilder
     {

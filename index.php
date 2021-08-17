@@ -2,8 +2,8 @@
 
 require 'vendor/autoload.php';
 
-use Jdefez\Graphql\Field;
 use Jdefez\Graphql\QueryBuilder;
+use Jdefez\Graphql\Field;
 
 $query = QueryBuilder::query()
     ->user(['id' => 1], function (Field $user) {
