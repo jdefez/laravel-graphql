@@ -9,6 +9,8 @@ use Exception;
 
 class Request implements Requestable
 {
+    // todo: use guzzle ?
+
     private string $api_token;
 
     private string $api_url;
@@ -20,7 +22,7 @@ class Request implements Requestable
         $this->api_url = $api_url;
     }
 
-    public function setToken(string $token): Graphqlable
+    public function setToken(string $token): Requestable
     {
         $this->api_token = $token;
 
