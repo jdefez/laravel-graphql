@@ -6,7 +6,11 @@ use Jdefez\Graphql\QueryBuilder;
 use Jdefez\Graphql\Field;
 
 $query = QueryBuilder::query()
-    ->user(['id' => 1], function (Field $user) {
+    ->user([
+        'updated_at' => ['from' => '2021-08-01', 'to' => '2021-08-01'],
+        'in' => [6, 7, 9],
+        'trashed' => 'WITH'
+    ], function (Field $user) {
         $user->id()
             ->name()
             ->email();
