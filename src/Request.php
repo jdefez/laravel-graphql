@@ -43,7 +43,7 @@ class Request implements Requestable
             ->get($this->api_url, compact('query', 'variables'))
             ->throw(function ($response, $e) {
                 // todo: log query and message
-                dd($e->getCode(), optional($response->object())->message);
+                //dd($e->getCode(), optional($response->object())->message);
             })
             ->json();
     }
