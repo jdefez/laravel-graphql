@@ -11,7 +11,7 @@ class QueryBuilder extends Field
 
     public function toString(bool $ugglify = true): string
     {
-        $return = 'QUERY {' . PHP_EOL;
+        $return = 'query {' . PHP_EOL;
         foreach ($this->fields as $field) {
             $return .= $field->toString();
         }

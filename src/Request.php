@@ -9,9 +9,7 @@ use Exception;
 
 class Request implements Requestable
 {
-    // todo: use guzzle ?
-
-    private string $api_token;
+    private ?string $api_token = null;
 
     private string $api_url;
 
@@ -97,14 +95,17 @@ class Request implements Requestable
 
     private function http(): PendingRequest
     {
-        if (!$this->api_token) {
-            throw new Exception('You must provide a token');
-        }
+        //if (!$this->api_token) {
+            //throw new Exception('You must provide a token');
+        //}
 
         if (! $this->http) {
-            $this->http = Http::withToken($this->api_token)
-                //->withOptions(['debug' => true])
+            $this->http = Http::withOptions(['debug' => true])
                  ->acceptJson();
+
+            if ($this->api_token) {
+                $this->http->withToken($this->api_token);
+            }
         }
 
         return $this->http;

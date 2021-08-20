@@ -13,7 +13,8 @@ class Graphql implements Graphqlable
         return QueryBuilder::query();
     }
 
-    //public function request(): Requestable
-    //{
-    //}
+    public function request(string $url): Requestable
+    {
+        return new Request($url);
+    }
 }
