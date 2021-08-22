@@ -1,15 +1,15 @@
 {
-    "name": "jdefez/graphql",
-    "description": "graphql query builder",
+    "name": "jdefez/laravel-graphql",
+    "description": "graphql request and query builder",
     "autoload": {
         "psr-4": {
-            "Jdefez\\Graphql\\": "src",
-            "Jdefez\\Graphql\\tests\\": "tests"
+            "Jdefez\\LaravelGraphql\\": "src",
+            "Jdefez\\LaravelGraphql\\tests\\": "tests"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jdefez\\Graphql\\tests\\": "tests"
+            "Jdefez\\LaravelGraphql\\tests\\": "tests"
         }
     },
     "authors": [
@@ -30,10 +30,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jdefez\\Graphql\\GraphqlServiceProvider"
+                "Jdefez\\LaravelGraphql\\GraphqlServiceProvider"
             ],
             "aliases": {
-                "Airtable": "Jdefez\\Graphql\\Facades\\Airtable"
+                "Airtable": "Jdefez\\LaravelGraphql\\Facades\\Graphql"
             }
         }
     },

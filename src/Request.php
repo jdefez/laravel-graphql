@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\Graphql;
+namespace Jdefez\LaravelGraphql;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;

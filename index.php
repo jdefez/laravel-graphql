@@ -2,8 +2,8 @@
 
 require 'vendor/autoload.php';
 
-use Jdefez\Graphql\QueryBuilder;
-use Jdefez\Graphql\Field;
+use Jdefez\LaravelGraphql\QueryBuilder;
+use Jdefez\LaravelGraphql\Field;
 
 $query = QueryBuilder::query()
     ->user([

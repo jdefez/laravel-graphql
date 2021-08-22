@@ -1,9 +1,9 @@
 <?php
 
-namespace Jdefez\Graphql\Facades;
+namespace Jdefez\LaravelGraphql\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Jdefez\Graphql\Graphqlable;
+use Jdefez\LaravelGraphql\Graphqlable;
 
 class Graphql extends Facade
 {

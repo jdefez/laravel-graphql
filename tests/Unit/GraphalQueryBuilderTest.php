@@ -1,11 +1,11 @@
 <?php
 
-namespace Jdefez\Graphql\Tests;
+namespace Jdefez\LaravelGraphql\Tests;
 
-use Jdefez\Graphql\Facades\Graphql;
-use Jdefez\Graphql\Field;
-use Jdefez\Graphql\QueryBuilder;
-use Jdefez\Graphql\tests\TestCase;
+use Jdefez\LaravelGraphql\Facades\Graphql;
+use Jdefez\LaravelGraphql\Field;
+use Jdefez\LaravelGraphql\QueryBuilder;
+use Jdefez\LaravelGraphql\tests\TestCase;
 
 class GraphqlQueryBuilderTest extends TestCase
 {
