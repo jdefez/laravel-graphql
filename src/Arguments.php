@@ -2,6 +2,8 @@
 
 namespace Jdefez\LaravelGraphql;
 
+use Illuminate\Support\Str;
+
 class Arguments
 {
     protected $values = [];
@@ -21,14 +23,44 @@ class Arguments
                 } else {
                     $value = $this->sequentialToString($value);
                 }
-            } elseif (is_string($value)) {
-                $value = '"' . $value . '"';
+            } else {
+                $value = $this->addQuote($value);
             }
 
             $return[] = sprintf('%s: %s', $key, $value);
         }
 
         return '(' . implode(', ', $return) . ')';
+    }
+
+    protected function assocToString(array $array): string
+    {
+        $return = [];
+        foreach ($array as $key => $value) {
+            $return[] = sprintf('%s: %s', $key, $this->addQuote($value));
+        }
+
+        return '{' . implode(', ', $return) . '}';
+    }
+
+    protected function sequentialToString(array $array): string
+    {
+        $values = array_values($array);
+        $values = array_map(fn ($item) => $this->addQuote($item), $values);
+
+        return '[' . implode(', ', $values) . ']';
+    }
+
+    protected function addQuote($value)
+    {
+        if ($value
+            && is_string($value)
+            && !Str::of($value)->startsWith('$')
+        ) {
+            $value = '"' . $value . '"';
+        }
+
+        return $value;
     }
 
     protected function isAssoc(array $array): bool
@@ -38,30 +70,5 @@ class Arguments
         }
 
         return array_keys($array) !== range(0, count($array) - 1);
-    }
-
-    protected function assocToString(array $array): string
-    {
-        $return = [];
-        foreach ($array as $key => $value) {
-            if (is_string($value)) {
-                $value = '"' . $value . '"';
-            }
-
-            $return[] = sprintf('%s: %s', $key, $value);
-        }
-
-        return '{' . implode(', ', $return) . '}';
-    }
-
-    protected function sequentialToString(array $array): string
-    {
-        $values = array_values($array);
-        $values = array_map(
-            fn ($item) => is_string($item) ? '"' . $item . '"' : $item,
-            $values
-        );
-
-        return '[' . implode(', ', $values) . ']';
     }
 }
