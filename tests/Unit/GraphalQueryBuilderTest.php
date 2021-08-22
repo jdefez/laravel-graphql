@@ -25,7 +25,7 @@ class GraphqlQueryBuilderTest extends TestCase
             );
 
         $this->assertEquals(
-            'QUERY { user(id: 1) { email name id }}',
+            'query { user(id: 1) { email name id }}',
             $query->toString()
         );
     }
