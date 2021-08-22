@@ -5,7 +5,6 @@ namespace Jdefez\LaravelGraphql;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Exception;
 
 class Request implements Requestable
 {
@@ -56,7 +55,8 @@ class Request implements Requestable
      */
     public function post(string $query, array $variables = []): array
     {
-        return $this->http()->post($this->api_url, compact('query', 'variables'))
+        return $this->http()
+            ->post($this->api_url, compact('query', 'variables'))
             ->throw()
             ->json();
     }
@@ -73,7 +73,8 @@ class Request implements Requestable
     public function put(string $query, int $id, array $variables = []): array
     {
         $url = $this->api_url . '/' . $id;
-        return $this->http()->put($url, compact('query', 'variables'))
+        return $this->http()
+            ->put($url, compact('query', 'variables'))
             ->throw()
             ->json();
     }
@@ -95,12 +96,8 @@ class Request implements Requestable
 
     private function http(): PendingRequest
     {
-        //if (!$this->api_token) {
-            //throw new Exception('You must provide a token');
-        //}
-
         if (! $this->http) {
-            $this->http = Http::withOptions(['debug' => true])
+            $this->http = Http::withOptions(['debug' => false])
                  ->acceptJson();
 
             if ($this->api_token) {
