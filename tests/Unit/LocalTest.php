@@ -9,18 +9,50 @@ use Jdefez\LaravelGraphql\tests\TestCase;
 
 class LocalTest extends TestCase
 {
-    public string $api_url = 'https://lighthouse-tutorial.test/graphql';
+    public string $api_url = 'http://localhost/graphql';
 
     /** @test */
-    public function it_fetch_a_user()
+    public function it_can_fetch_a_user()
     {
         $request = Graphql::request($this->api_url);
         $query = QueryBuilder::query()
-            ->user(['id' => 1], fn(Field $user) => $user->email()
+            ->user(
+                ['id' => 1],
+                fn (Field $user) => $user
+                ->email()
                 ->name()
                 ->id()
+                ->posts(
+                    fn ($post) => $post
+                    ->id()
+                    ->title()
+                )
             );
         $response = $request->get($query->toString());
+
+        dd($response);
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_can_create_a_user()
+    {
+        $request = Graphql::request($this->api_url);
+
+        $query = QueryBuilder::mutation([
+            '$name' => 'String!', '$email' => 'String!'
+        ])->createUser(
+            ['name' => '$name', 'email' => '$email'],
+            fn ($user) => $user
+                    ->name()
+                    ->email()
+        );
+
+        dd($query->toString());
+        $response = $request->post($query->toString(), [
+            'name' => 'test', 'email' => 'test1@gmail.com'
+        ]);
+
         dd($response);
         $this->assertTrue(true);
     }

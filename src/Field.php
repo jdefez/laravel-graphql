@@ -12,6 +12,9 @@ class Field
 
     protected ?Field $parent = null;
 
+    // query | mutation
+    public ?string $type;
+
     public function __construct(?string $name = null, ?array $arguments = null)
     {
         if ($name) {

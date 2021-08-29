@@ -6,7 +6,11 @@ use Illuminate\Support\Str;
 
 class Arguments
 {
-    protected $values = [];
+    protected array $values = [];
+
+    protected array $scalars = [
+        'String', 'Int', 'Float', 'Boolean', 'ID'
+    ];
 
     public function __construct(array $values)
     {
@@ -56,6 +60,8 @@ class Arguments
         if ($value
             && is_string($value)
             && !Str::of($value)->startsWith('$')
+            && !$this->isScalar($value)
+            && !$this->isCustomType($value)
         ) {
             $value = '"' . $value . '"';
         }
@@ -70,5 +76,20 @@ class Arguments
         }
 
         return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    protected function isScalar(string $type): bool
+    {
+        return Str::contains($type, $this->scalars);
+    }
+
+    protected function isCustomType(string $string): bool
+    {
+        return self::isUpperCase(substr($string, 0, 1));
+    }
+
+    public static function isUpperCase(string $string): bool
+    {
+        return strtoupper($string) === $string;
     }
 }
