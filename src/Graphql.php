@@ -2,19 +2,23 @@
 
 namespace Jdefez\LaravelGraphql;
 
+use Jdefez\LaravelGraphql\QueryBuilder\Builder;
+use Jdefez\LaravelGraphql\Request\Client;
+use Jdefez\LaravelGraphql\Request\Requestable;
+
 class Graphql implements Graphqlable
 {
-    protected QueryBuilder $builder;
+    protected Builder $builder;
 
     protected Requestable $request;
 
-    public static function query(): QueryBuilder
+    public static function query(): Builder
     {
-        return QueryBuilder::query();
+        return Builder::query();
     }
 
     public function request(string $url): Requestable
     {
-        return new Request($url);
+        return new Client($url);
     }
 }

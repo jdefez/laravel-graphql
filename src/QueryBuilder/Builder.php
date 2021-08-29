@@ -1,8 +1,8 @@
 <?php
 
-namespace Jdefez\LaravelGraphql;
+namespace Jdefez\LaravelGraphql\QueryBuilder;
 
-class Field
+class Builder
 {
     public ?string $name = null;
 
@@ -10,10 +10,7 @@ class Field
 
     public ?Arguments $arguments = null;
 
-    protected ?Field $parent = null;
-
-    // query | mutation
-    public ?string $type;
+    protected ?Builder $parent = null;
 
     public function __construct(?string $name = null, ?array $arguments = null)
     {
@@ -26,7 +23,17 @@ class Field
         }
     }
 
-    public function __call(string $name, ?array $arguments = null): Field
+    public static function query(): Builder
+    {
+        return new self('query');
+    }
+
+    public static function mutation(array $arguments): Builder
+    {
+        return new self('mutation', $arguments);
+    }
+
+    public function __call(string $name, ?array $arguments = null): Builder
     {
         $callback = $this->extractCallback($arguments);
         $field = new self($name, $arguments);
@@ -40,36 +47,7 @@ class Field
         return $this;
     }
 
-    public function addField(Field $field): Field
-    {
-        array_push($this->fields, $field);
-
-        return $this;
-    }
-
-    public function extractCallback(?array &$arguments = null): ?callable
-    {
-        $callback = null;
-        if (! empty($arguments)
-            && is_callable($arguments[count($arguments) - 1])
-        ) {
-            $callback = array_pop($arguments);
-            if (isset($arguments[0])) {
-                $arguments = $arguments[0];
-            }
-        }
-
-        return $callback;
-    }
-
-    public function setArguments(array $arguments): Field
-    {
-        $this->arguments = new Arguments($arguments);
-
-        return $this;
-    }
-
-    public function toString(): string
+    public function toString(bool $ugglify = true): string
     {
         $return = '';
 
@@ -86,13 +64,56 @@ class Field
                 $return .= $field->toString();
             }
             $return .= $this->indent('}', $depth) . PHP_EOL;
-
         } else {
             $depth = $this->getParentsCount($this);
             $return .= $this->indent($this->name, $depth) . PHP_EOL;
         }
 
+        if ($ugglify) {
+            $return = str_replace(PHP_EOL, '', $return);
+            $return = preg_replace('#\s+#', ' ', $return);
+        }
+
         return $return;
+    }
+
+    public function dump(): string
+    {
+        return $this->toString(false);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
+    protected function addField(Builder $field): Builder
+    {
+        array_push($this->fields, $field);
+
+        return $this;
+    }
+
+    protected function extractCallback(?array &$arguments = null): ?callable
+    {
+        $callback = null;
+        if (! empty($arguments)
+            && is_callable($arguments[count($arguments) - 1])
+        ) {
+            $callback = array_pop($arguments);
+            if (isset($arguments[0])) {
+                $arguments = $arguments[0];
+            }
+        }
+
+        return $callback;
+    }
+
+    protected function setArguments(array $arguments): Builder
+    {
+        $this->arguments = new Arguments($arguments);
+
+        return $this;
     }
 
     protected function indent(string $string, int $depth): string
@@ -107,7 +128,7 @@ class Field
         return ! is_null($this->parent);
     }
 
-    protected function getParentsCount(Field $child): int
+    protected function getParentsCount(Builder $child): int
     {
         $count = 0;
         while ($child->hasParent()) {
@@ -117,7 +138,7 @@ class Field
         return $count;
     }
 
-    protected function setParent(Field $parent): void
+    protected function setParent(Builder $parent): void
     {
         $this->parent = $parent;
     }

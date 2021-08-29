@@ -1,12 +1,12 @@
 <?php
 
-namespace Jdefez\LaravelGraphql;
+namespace Jdefez\LaravelGraphql\Request;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
-class Request implements Requestable
+class Client implements Requestable
 {
     private ?string $api_token = null;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql;
+namespace Jdefez\LaravelGraphql\Request;
 
 interface Requestable
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests;
+namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Jdefez\LaravelGraphql\Facades\Graphql;
-use Jdefez\LaravelGraphql\Requestable;
+use Jdefez\LaravelGraphql\Request\Requestable;
 use Jdefez\LaravelGraphql\tests\TestCase;
 
 class GraphqlRequestTest extends TestCase
