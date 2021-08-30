@@ -87,9 +87,10 @@ class Client implements Requestable
      *
      * @throws RequestException
      */
-    public function delete(string $query, int $id): array
+    public function delete(string $query, array $variables = []): array
     {
-        return $this->http()->put($this->api_url . '/' . $id, compact('query'))
+        return $this->http()
+            ->post($this->api_url, compact('query', 'variables'))
             ->throw()
             ->json();
     }

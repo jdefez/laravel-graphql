@@ -12,5 +12,5 @@ interface Requestable
 
     public function put(string $query, int $id, array $variables = []): array;
 
-    public function delete(string $query, int $id): array;
+    public function delete(string $query, array $variables = []): array;
 }
