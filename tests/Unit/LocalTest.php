@@ -13,23 +13,26 @@ class LocalTest extends TestCase
     /** @test */
     public function it_can_fetch_a_user()
     {
-        $request = Graphql::request($this->api_url);
         $query = Builder::query()
-            ->user(['id' => 1], fn (Builder $user) => $user
+            ->user(
+                ['id' => 1],
+                fn (Builder $user) => $user
                 ->email()
                 ->name()
                 ->id()
-                ->posts(fn ($post) => $post
+                ->posts(
+                    fn ($post) => $post
                     ->id()
                     ->title()
                 )
             );
 
-        dd($query->toString());
+        dump($query->toString());
 
-        $response = $request->get($query->toString());
+        $response = Graphql::request($this->api_url)
+            ->get($query->toString());
 
-        dd($response);
+        dump($response);
 
         $this->assertTrue(true);
     }
@@ -37,24 +40,43 @@ class LocalTest extends TestCase
     /** @test */
     public function it_can_create_a_user()
     {
-        $request = Graphql::request($this->api_url);
-
         $query = Builder::mutation([
-            '$name' => 'String!', '$email' => 'String!'
+            '$input' => 'UserInput',
         ])->createUser(
-            ['name' => '$name', 'email' => '$email'],
+            ['input' => '$input'],
             fn (Builder $user) => $user
                     ->name()
                     ->email()
         );
 
-        dd($query->toString());
+        dump($query->toString());
 
-        $response = $request->post($query->toString(), [
-            'name' => 'test', 'email' => 'test1@gmail.com'
-        ]);
+        $response = Graphql::request($this->api_url)
+            ->post($query->toString(), [
+                'input' => ['name' => 'test', 'email' => 'test2@gmail.com']
+            ]);
 
-        dd($response);
+        dump($response);
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_can_delete_a_user()
+    {
+        $query = Builder::mutation(['$id' => 'ID!'])
+            ->deleteUser(['id' => '$id'], fn (Builder $user) => $user
+                ->id()
+                ->email()
+            );
+
+        dump($query->toString());
+
+        $response = Graphql::request($this->api_url)
+            ->delete($query->toString(), ['id' => 3]);
+
+        dump($response);
+
         $this->assertTrue(true);
     }
 }
