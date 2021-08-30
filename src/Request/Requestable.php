@@ -10,7 +10,7 @@ interface Requestable
 
     public function post(string $query, array $variables = []): array;
 
-    public function put(string $query, int $id, array $variables = []): array;
+    public function put(string $query, array $variables = []): array;
 
     public function delete(string $query, array $variables = []): array;
 }

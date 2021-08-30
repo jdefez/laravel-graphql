@@ -12,7 +12,7 @@ class Client implements Requestable
 
     private string $api_url;
 
-    protected ? PendingRequest $http = null;
+    protected ?PendingRequest $http = null;
 
     public function __construct(string $api_url)
     {
@@ -38,10 +38,7 @@ class Client implements Requestable
     {
         return $this->http()
             ->get($this->api_url, compact('query', 'variables'))
-            ->throw(function ($response, $e) {
-                // todo: log query and message
-                //dd($e->getCode(), optional($response->object())->message);
-            })
+            ->throw()
             ->json();
     }
 
@@ -63,25 +60,23 @@ class Client implements Requestable
 
     /**
      * @param string $query
-     * @param int $id
      * @param array $variables
      *
      * @return array
      *
      * @throws RequestException
      */
-    public function put(string $query, int $id, array $variables = []): array
+    public function put(string $query, array $variables = []): array
     {
-        $url = $this->api_url . '/' . $id;
         return $this->http()
-            ->put($url, compact('query', 'variables'))
+            ->post($this->api_url, compact('query', 'variables'))
             ->throw()
             ->json();
     }
 
     /**
      * @param string $query
-     * @param int $id
+     * @param array $variables
      *
      * @return array
      *
