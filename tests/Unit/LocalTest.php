@@ -5,6 +5,7 @@ namespace Jdefez\LaravelGraphql\Tests\Unit;
 use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 use Jdefez\LaravelGraphql\tests\TestCase;
+use Illuminate\Http\Client\RequestException;
 
 class LocalTest extends TestCase
 {
@@ -41,10 +42,11 @@ class LocalTest extends TestCase
     public function it_can_create_a_user()
     {
         $query = Builder::mutation([
-            '$input' => 'UserInput',
+            '$input' => 'CreateUserInput',
         ])->createUser(
             ['input' => '$input'],
             fn (Builder $user) => $user
+                    ->id()
                     ->name()
                     ->email()
         );
@@ -62,12 +64,73 @@ class LocalTest extends TestCase
     }
 
     /** @test */
+    public function it_can_upsert_a_user()
+    {
+        $query = Builder::mutation([
+            '$input' => 'UpdateUserInput',
+        ])->upsertUser(
+            ['input' => '$input'],
+            fn (Builder $user) => $user
+                ->id()
+                ->name()
+                ->email()
+        );
+
+        dump($query->toString());
+
+        $response = Graphql::request($this->api_url)
+            ->post($query->toString(), [
+                'input' => [
+                    'id' => 4,
+                    'name' => 'test upserted',
+                    'email' => 'jacky.chan@gmail.com'
+                ]
+            ]);
+
+        dump($response);
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_can_update_a_user()
+    {
+        $query = Builder::mutation([
+            '$input' => 'UpdateUserInput',
+        ])->updateUser(
+            ['input' => '$input'],
+            fn (Builder $user) => $user
+                ->id()
+                ->name()
+                ->email()
+        );
+
+        dump($query->toString());
+
+        $response = Graphql::request($this->api_url)
+            ->post($query->toString(), [
+                'input' => [
+                    'id' => 4,
+                    'name' => 'test updated',
+                    'email' => 'jacky.chan@gmail.com'
+                ]
+            ]);
+
+        dump($response);
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
     public function it_can_delete_a_user()
     {
         $query = Builder::mutation(['$id' => 'ID!'])
-            ->deleteUser(['id' => '$id'], fn (Builder $user) => $user
-                ->id()
-                ->email()
+            ->deleteUser(
+                ['id' => '$id'],
+                fn (Builder $user) => $user
+                    ->id()
+                    ->name()
+                    ->email()
             );
 
         dump($query->toString());
