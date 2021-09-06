@@ -22,7 +22,7 @@ class Graphql implements Graphqlable
         return Builder::mutation($arguments);
     }
 
-    public function request(string $url): Requestable
+    public static function request(string $url): Requestable
     {
         return new Client($url);
     }
