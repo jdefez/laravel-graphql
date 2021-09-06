@@ -7,7 +7,7 @@ use Jdefez\LaravelGraphql\Request\Requestable;
 
 interface Graphqlable
 {
-    public function request(string $url): Requestable;
+    public static function request(string $url): Requestable;
 
     public static function mutation(array $arguments): Builder;
 

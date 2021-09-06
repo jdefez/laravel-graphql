@@ -1,6 +1,10 @@
 {
     "name": "jdefez/laravel-graphql",
     "description": "graphql request and query builder",
+    "version": "1.0.0",
+    "keywords": [
+        "laravel-graphql", "graphql", "http"
+    ],
     "autoload": {
         "psr-4": {
             "Jdefez\\LaravelGraphql\\": "src",
@@ -33,7 +37,7 @@
                 "Jdefez\\LaravelGraphql\\GraphqlServiceProvider"
             ],
             "aliases": {
-                "Airtable": "Jdefez\\LaravelGraphql\\Facades\\Graphql"
+                "Graphql": "Jdefez\\LaravelGraphql\\Facades\\Graphql"
             }
         }
     },

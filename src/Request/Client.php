@@ -5,6 +5,7 @@ namespace Jdefez\LaravelGraphql\Request;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use stdClass;
 
 class Client implements Requestable
 {
@@ -34,12 +35,12 @@ class Client implements Requestable
      *
      * @throws RequestException
      */
-    public function get(string $query, ?array $variables = []): array
+    public function get(string $query, ?array $variables = []): stdClass
     {
         return $this->http()
             ->get($this->api_url, compact('query', 'variables'))
             ->throw()
-            ->json();
+            ->object();
     }
 
     /**
@@ -50,12 +51,12 @@ class Client implements Requestable
      *
      * @throws RequestException
      */
-    public function post(string $query, array $variables = []): array
+    public function post(string $query, array $variables = []): stdClass
     {
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
             ->throw()
-            ->json();
+            ->object();
     }
 
     /**
@@ -66,12 +67,12 @@ class Client implements Requestable
      *
      * @throws RequestException
      */
-    public function put(string $query, array $variables = []): array
+    public function put(string $query, array $variables = []): stdClass
     {
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
             ->throw()
-            ->json();
+            ->object();
     }
 
     /**
@@ -82,12 +83,12 @@ class Client implements Requestable
      *
      * @throws RequestException
      */
-    public function delete(string $query, array $variables = []): array
+    public function delete(string $query, array $variables = []): stdClass
     {
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
             ->throw()
-            ->json();
+            ->object();
     }
 
     private function http(): PendingRequest
