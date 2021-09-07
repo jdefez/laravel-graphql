@@ -9,7 +9,7 @@ interface Graphqlable
 {
     public static function request(string $url): Requestable;
 
-    public static function mutation(array $arguments): Builder;
+    public static function mutation(?array $arguments = null): Builder;
 
     public static function query(): Builder;
 }
