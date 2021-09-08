@@ -28,7 +28,7 @@ class Builder
         return new self('query');
     }
 
-    public static function mutation(array $arguments): Builder
+    public static function mutation(?array $arguments = null): Builder
     {
         return new self('mutation', $arguments);
     }

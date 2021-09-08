@@ -17,7 +17,7 @@ class Graphql implements Graphqlable
         return Builder::query();
     }
 
-    public static function mutation(array $arguments): Builder
+    public static function mutation(? array $arguments = null): Builder
     {
         return Builder::mutation($arguments);
     }
