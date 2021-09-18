@@ -9,11 +9,22 @@ use stdClass;
 
 class Client implements Requestable
 {
+    // todo: handle errors
+    //       http exceptions
+    //       validation exceptions
+    //       graphql exceptions
+    //
+    // todo: handle responses
+    //       $response = $response->data->query ...
+    //       return $query-> ... ??
+
     private ?string $api_token = null;
 
     private string $api_url;
 
     protected ?PendingRequest $http = null;
+
+    protected bool $debug = false;
 
     public function __construct(string $api_url)
     {
