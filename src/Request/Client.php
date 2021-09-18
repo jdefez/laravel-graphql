@@ -27,6 +27,11 @@ class Client implements Requestable
         return $this;
     }
 
+    public function setDebug(): void
+    {
+        $this->debug = true;
+    }
+
     /**
      * @throws RequestException
      */
@@ -52,8 +57,9 @@ class Client implements Requestable
     private function http(): PendingRequest
     {
         if (! $this->http) {
-            $this->http = Http::withOptions(['debug' => false])
-                 ->acceptJson();
+            $this->http = Http::withOptions([
+                'debug' => $this->debug
+            ])->acceptJson();
 
             if ($this->api_token) {
                 $this->http->withToken($this->api_token);
