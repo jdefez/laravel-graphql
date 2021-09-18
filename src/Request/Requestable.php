@@ -11,8 +11,4 @@ interface Requestable
     public function get(string $query, ?array $variables = []): stdClass;
 
     public function post(string $query, array $variables = []): stdClass;
-
-    public function put(string $query, array $variables = []): stdClass;
-
-    public function delete(string $query, array $variables = []): stdClass;
 }

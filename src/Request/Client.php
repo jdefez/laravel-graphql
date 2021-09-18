@@ -28,11 +28,6 @@ class Client implements Requestable
     }
 
     /**
-     * @param string $query
-     * @param null|array $variables
-     *
-     * @return array
-     *
      * @throws RequestException
      */
     public function get(string $query, ?array $variables = []): stdClass
@@ -44,46 +39,9 @@ class Client implements Requestable
     }
 
     /**
-     * @param string $query
-     * @param array $variables
-     *
-     * @return array
-     *
      * @throws RequestException
      */
     public function post(string $query, array $variables = []): stdClass
-    {
-        return $this->http()
-            ->post($this->api_url, compact('query', 'variables'))
-            ->throw()
-            ->object();
-    }
-
-    /**
-     * @param string $query
-     * @param array $variables
-     *
-     * @return array
-     *
-     * @throws RequestException
-     */
-    public function put(string $query, array $variables = []): stdClass
-    {
-        return $this->http()
-            ->post($this->api_url, compact('query', 'variables'))
-            ->throw()
-            ->object();
-    }
-
-    /**
-     * @param string $query
-     * @param array $variables
-     *
-     * @return array
-     *
-     * @throws RequestException
-     */
-    public function delete(string $query, array $variables = []): stdClass
     {
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
