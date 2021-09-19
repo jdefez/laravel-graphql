@@ -86,6 +86,7 @@ class Arguments
     protected function isCustomType(string $string): bool
     {
         $letter = substr($string, 0, 1);
+
         return ! empty(Str::of($letter)->match('/[a-zA-Z]/')->__toString())
             && self::isUpperCase($letter);
     }

@@ -2,9 +2,12 @@
 
 namespace Jdefez\LaravelGraphql\Request;
 
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Jdefez\LaravelGraphql\QueryBuilder\Buildable;
 use stdClass;
 
 class Client implements Requestable
@@ -46,23 +49,52 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function get(string $query, ?array $variables = []): stdClass
+    public function get(Buildable|string $query, ?array $variables = []): stdClass
     {
-        return $this->http()
+        if ($query instanceof Buildable) {
+            $query = $query->toString();
+        }
+
+        $response = $this->http()
             ->get($this->api_url, compact('query', 'variables'))
             ->throw()
             ->object();
+
+        return $this->handleResponse($response);
     }
 
     /**
      * @throws RequestException
      */
-    public function post(string $query, array $variables = []): stdClass
+    public function post(Buildable|string $query, array $variables = []): stdClass
     {
-        return $this->http()
+        if ($query instanceof Buildable) {
+            $query = $query->toString();
+        }
+
+        $response = $this->http()
             ->post($this->api_url, compact('query', 'variables'))
-            ->throw()
             ->object();
+
+        return $this->handleResponse($response);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function handleResponse(stdClass $response)
+    {
+        if (property_exists($response, 'data')) {
+            return $response->data;
+        }
+
+        if (property_exists($response, 'errors')) {
+            $message = collect($response->errors)
+                ->first()
+                ->message;
+
+            throw new Exception($message, Response::HTTP_FOUND);
+        }
     }
 
     private function http(): PendingRequest

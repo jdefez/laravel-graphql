@@ -2,7 +2,7 @@
 
 namespace Jdefez\LaravelGraphql\QueryBuilder;
 
-class Builder
+class Builder implements Buildable
 {
     public ?string $name = null;
 

@@ -18,10 +18,12 @@ class GraphqlQueryBuilderTest extends TestCase
     public function it_can_build_a_query()
     {
         $query = Builder::query()
-            ->user(['id' => 1], fn(Builder $user) => $user
-                ->email()
-                ->name()
-                ->id()
+            ->user(
+                ['id' => 1],
+                fn (Builder $user) => $user
+                    ->email()
+                    ->name()
+                    ->id()
             );
 
         $this->assertEquals(
@@ -30,7 +32,6 @@ class GraphqlQueryBuilderTest extends TestCase
         );
     }
 
-    // 
     /** @test */
     public function it_can_build_a_mutation()
     {

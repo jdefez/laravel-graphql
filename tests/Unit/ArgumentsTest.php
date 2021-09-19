@@ -35,4 +35,17 @@ class ArgumentsTest extends TestCase
             $args->toString()
         );
     }
+
+    /** @test */
+    public function it_renders_scalars()
+    {
+        $args = new Arguments([
+            'myBoolean' => 'Boolean'
+        ]);
+
+        $this->assertEquals(
+            '(myBoolean: Boolean)',
+            $args->toString()
+        );
+    }
 }
