@@ -74,6 +74,7 @@ class Client implements Requestable
 
         $response = $this->http()
             ->post($this->api_url, compact('query', 'variables'))
+            ->throw()
             ->object();
 
         return $this->handleResponse($response);
