@@ -1,7 +1,6 @@
 {
     "name": "jdefez/laravel-graphql",
     "description": "graphql request and query builder",
-    "version": "1.0.0",
     "keywords": [
         "laravel-graphql", "graphql", "http"
     ],
