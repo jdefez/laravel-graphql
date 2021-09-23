@@ -76,17 +76,26 @@ class Client implements Requestable
      */
     private function handleResponse(stdClass $response)
     {
+        if (property_exists($response, 'errors')) {
+            $error = $response->errors[0];
+            $message = $error->message;
+
+            if (property_exists($error, 'extensions')) {
+                $category = $error->extensions->category;
+                $reasons = collect((array) $error->extensions->{$category})
+                    ->map(fn ($item) => $item[0])
+                    ->values()
+                    ->join(', ', ' and ');
+                $message = sprintf('%s (%s): %s', $message, $category, $reasons);
+            }
+
+            throw new Exception($message, Response::HTTP_FOUND);
+        }
+
         if (property_exists($response, 'data')) {
             return $response->data;
         }
 
-        if (property_exists($response, 'errors')) {
-            $message = collect($response->errors)
-                ->first()
-                ->message;
-
-            throw new Exception($message, Response::HTTP_FOUND);
-        }
     }
 
     private function http(): PendingRequest
