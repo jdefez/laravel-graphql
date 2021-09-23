@@ -82,11 +82,13 @@ class Client implements Requestable
 
             if (property_exists($error, 'extensions')) {
                 $category = $error->extensions->category;
-                $reasons = collect((array) $error->extensions->{$category})
-                    ->map(fn ($item) => $item[0])
-                    ->values()
-                    ->join(', ', ' and ');
-                $message = sprintf('%s (%s): %s', $message, $category, $reasons);
+                if (property_exists($error->extensions, $category)) {
+                    $reasons = collect((array) $error->extensions->{$category})
+                        ->map(fn ($item) => $item[0])
+                        ->values()
+                        ->join(', ', ' and ');
+                    $message = sprintf('%s (%s): %s', $message, $category, $reasons);
+                }
             }
 
             throw new Exception($message, Response::HTTP_FOUND);

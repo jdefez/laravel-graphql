@@ -33,12 +33,40 @@ class GraphqlRequestTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception()
-    {
-        $this->httpFake('Validation exception', 500);
-        $this->expectException(RequestException::class);
+    //public function it_throws_an_exception()
+    //{
+        //$this->httpFake('Validation exception', 500);
+        //$this->expectException(RequestException::class);
 
-        $this->client->post('some query', ['input' => ['foo' => 'value']]);
+        //$this->client->post('some query', ['input' => ['foo' => 'value']]);
+    //}
+
+    /** @test */
+    public function it_handles_graphql_validation_errors()
+    {
+        $this->httpFake([
+            'errors' => [
+                [
+                    'message' => 'Cannot query field "unknownQuery" on type "Query".',
+                    'extensions' => [
+                        'validation' => [
+                            'key' => ['some reason'],
+                        ],
+                        'category' => 'validation'
+                    ],
+                    'locations' => [
+                        [
+                            'line' => 1,
+                            'column' => 9
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Cannot query field "unknownQuery" on type "Query". (validation): some reason');
+        $this->client->get('some query');
     }
 
     /** @test */
@@ -61,34 +89,6 @@ class GraphqlRequestTest extends TestCase
         $this->assertObjectHasAttribute('email', $response->user);
         $this->assertObjectHasAttribute('name', $response->user);
         $this->assertObjectHasAttribute('id', $response->user);
-    }
-
-    /** @test */
-    public function it_handles_graphql_errors()
-    {
-        $this->httpFake(
-            [
-                'errors' => [
-                    [
-                        'message' => 'Cannot query field "unknownQuery" on type "Query".',
-                        'extensions' => [
-                            'category' => 'graphql'
-                        ],
-                        'locations' => [
-                            [
-                                'line' => 1,
-                                'column' => 9
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        );
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Cannot query field "unknownQuery" on type "Query"');
-
-        $this->client->get('some query');
     }
 
     public function it_handles_validation_exception()
