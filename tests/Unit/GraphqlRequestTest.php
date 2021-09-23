@@ -3,6 +3,7 @@
 namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Exception;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\Request\Client;
@@ -29,6 +30,15 @@ class GraphqlRequestTest extends TestCase
             Requestable::class,
             Graphql::request($this->api_url)
         );
+    }
+
+    /** @test */
+    public function it_throws_an_exception()
+    {
+        $this->httpFake('Validation exception', 500);
+        $this->expectException(RequestException::class);
+
+        $this->client->post('some query', ['input' => ['foo' => 'value']]);
     }
 
     /** @test */
@@ -86,7 +96,7 @@ class GraphqlRequestTest extends TestCase
         $this->markTestIncomplete('todo implement');
     }
 
-    private function httpFake(array $responseBody, int $responseCode = 200)
+    private function httpFake($responseBody, int $responseCode = 200)
     {
         Http::fake([
             'localhost*' => Http::response($responseBody, $responseCode)
