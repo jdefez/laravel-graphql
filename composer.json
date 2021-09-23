@@ -1,6 +1,7 @@
 {
     "name": "jdefez/laravel-graphql",
     "description": "graphql request and query builder",
+    "license": "MIT",
     "keywords": [
         "laravel-graphql", "graphql", "http"
     ],
