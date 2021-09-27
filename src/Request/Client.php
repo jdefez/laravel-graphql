@@ -2,13 +2,11 @@
 
 namespace Jdefez\LaravelGraphql\Request;
 
-use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\Response;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\QueryBuilder\Buildable;
-use stdClass;
 
 class Client implements Requestable
 {
@@ -32,79 +30,46 @@ class Client implements Requestable
         return $this;
     }
 
-    public function setDebug(): void
+    public function setDebug(): Requestable
     {
         $this->debug = true;
+
+        return $this;
     }
 
     /**
      * @throws RequestException
      */
-    public function get(Buildable|string $query, ?array $variables = []): stdClass
+    public function get(Buildable|string $query, ?array $variables = []): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
         }
 
-        $response = $this->http()
+        return $this->http()
             ->get($this->api_url, compact('query', 'variables'))
-            ->throw()
-            ->object();
-
-        return $this->handleResponse($response);
+            ->throw();
     }
 
     /**
      * @throws RequestException
      */
-    public function post(Buildable|string $query, array $variables = []): stdClass
+    public function post(Buildable|string $query, array $variables = []): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
         }
 
-        $response = $this->http()
+        return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
-            ->throw()
-            ->object();
-
-        return $this->handleResponse($response);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function handleResponse(stdClass $response)
-    {
-        if (property_exists($response, 'errors')) {
-            $error = $response->errors[0];
-            $message = $error->message;
-
-            if (property_exists($error, 'extensions')) {
-                $category = $error->extensions->category;
-                if (property_exists($error->extensions, $category)) {
-                    $reasons = collect((array) $error->extensions->{$category})
-                        ->map(fn ($item) => $item[0])
-                        ->values()
-                        ->join(', ', ' and ');
-                    $message = sprintf('%s (%s): %s', $message, $category, $reasons);
-                }
-            }
-
-            throw new Exception($message, Response::HTTP_FOUND);
-        }
-
-        if (property_exists($response, 'data')) {
-            return $response->data;
-        }
-
+            ->throw();
     }
 
     private function http(): PendingRequest
     {
         if (! $this->http) {
             $this->http = Http::withOptions([
-                'debug' => $this->debug
+                'debug' => $this->debug,
             ])->acceptJson();
 
             if ($this->api_token) {

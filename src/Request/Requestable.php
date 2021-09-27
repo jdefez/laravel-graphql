@@ -2,13 +2,15 @@
 
 namespace Jdefez\LaravelGraphql\Request;
 
-use stdClass;
+use Illuminate\Http\Client\Response;
 
 interface Requestable
 {
     public function setToken(string $token): Requestable;
 
-    public function get(string $query, ?array $variables = []): stdClass;
+    public function setDebug(): Requestable;
 
-    public function post(string $query, array $variables = []): stdClass;
+    public function get(string $query, ?array $variables = []): Response;
+
+    public function post(string $query, array $variables = []): Response;
 }
