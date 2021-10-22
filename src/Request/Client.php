@@ -6,6 +6,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Jdefez\LaravelGraphql\Inputs\Inputable;
 use Jdefez\LaravelGraphql\QueryBuilder\Buildable;
 
 class Client implements Requestable
@@ -40,7 +41,7 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function get(Buildable|string $query, ?array $variables = []): Response
+    public function get(Buildable|string $query, ?Inputable $variables = null): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
@@ -54,7 +55,7 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function post(Buildable|string $query, array $variables = []): Response
+    public function post(Buildable|string $query, Inputable $variables = null): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
