@@ -19,7 +19,7 @@ $query = Builder::query()
   );
 ```
 
-```json
+```
 query {
   user(id: 1) {
     email
@@ -42,7 +42,7 @@ $response = Graphql::request('api/url')
     "user": {
       "email": "h.green@mailer.com",
       "name": "Hank Green",
-      "id": 1,
+      "id": 1
     }
   }
 }
@@ -64,7 +64,7 @@ $query = Builder::mutation([
           ->email()
 );
 
-```json
+```
 mutation($name: String!, $email: String!) {
   createUser(name: $name, email: $email) {
     name
@@ -89,9 +89,9 @@ $response = Graphql::request('api/url')
 "mutation": {
   "data": {
     "createUser": {
-      "id" => 1,
-      "name" => "Hank Green",
-      "email" => "h.green@mail.com"
+      "id": 1,
+      "name": "Hank Green",
+      "email": "h.green@mail.com"
     }
   }
 }
