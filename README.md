@@ -63,6 +63,7 @@ $query = Builder::mutation([
           ->name()
           ->email()
 );
+```
 
 ```text
 mutation($name: String!, $email: String!) {
