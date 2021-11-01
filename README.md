@@ -19,7 +19,7 @@ $query = Builder::query()
   );
 ```
 
-```
+```text
 query {
   user(id: 1) {
     email
@@ -64,7 +64,7 @@ $query = Builder::mutation([
           ->email()
 );
 
-```
+```text
 mutation($name: String!, $email: String!) {
   createUser(name: $name, email: $email) {
     name
