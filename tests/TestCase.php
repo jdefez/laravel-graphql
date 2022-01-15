@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests;
+namespace Jdefez\LaravelGraphql\tests;
 
 use Jdefez\LaravelGraphql\GraphqlServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;

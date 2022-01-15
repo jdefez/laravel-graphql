@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests\Unit;
+namespace Jdefez\LaravelGraphql\tests\Unit;
 
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;

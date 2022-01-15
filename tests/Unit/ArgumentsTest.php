@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests\Unit;
+namespace Jdefez\LaravelGraphql\tests\Unit;
 
 use Jdefez\LaravelGraphql\QueryBuilder\Arguments;
 use Jdefez\LaravelGraphql\tests\TestCase;
