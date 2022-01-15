@@ -1,9 +1,10 @@
 # laravel-graphql
 
-## Query
+Small utility class to store Graphql queries and mutations as php classes
+
+## Queries
 
 ```php
-
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 use Jdefez\LaravelGraphql\Facades;
 
@@ -17,16 +18,18 @@ $query = Builder::query()
           ->name()
           ->id()
   );
-```
 
-```text
-query {
-  user(id: 1) {
-    email
-    name
-    id
-  }
-}
+echo $query->dump();
+
+// outputs
+//
+// query {
+//   user(id: 1) {
+//     email
+//     name
+//     id
+//   }
+// }
 ```
 
 ```php
@@ -48,7 +51,7 @@ $response = Graphql::request('api/url')
 }
 ```
 
-## Mutation
+## Mutations
 
 ```php
 $query = Builder::mutation([
@@ -63,15 +66,18 @@ $query = Builder::mutation([
           ->name()
           ->email()
 );
-```
 
-```text
-mutation($name: String!, $email: String!) {
-  createUser(name: $name, email: $email) {
-    name
-    email
-   }
-}
+echo $query->dump();
+
+// outputs
+//
+// mutation($name: String!, $email: String!) {
+//   createUser(name: $name, email: $email) {
+//     name
+//     email
+//    }
+// }
+
 ```
 
 ```php
@@ -82,8 +88,7 @@ $response = Graphql::request('api/url')
       'name' => 'hank Green',
       'email' => 'h.green@mailer.com'
     ]
-  ])
-  ->toObject();
+  ])->toObject();
 ```
 
 ```json
