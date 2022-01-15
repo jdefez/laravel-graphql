@@ -41,10 +41,17 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function get(Buildable|string $query, ?Inputable $variables = null): Response
+    public function get(Buildable|string $query, ?Inputable $input = null): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
+        }
+
+        $variables = null;
+        if ($input) {
+            $variables = [
+                'input' => $input->toArray()
+            ];
         }
 
         return $this->http()
@@ -55,11 +62,15 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function post(Buildable|string $query, Inputable $variables = null): Response
+    public function post(Buildable|string $query, Inputable $input): Response
     {
         if ($query instanceof Buildable) {
             $query = $query->toString();
         }
+
+        $variables = [
+            'input' => $input->toArray()
+        ];
 
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
@@ -68,7 +79,7 @@ class Client implements Requestable
 
     private function http(): PendingRequest
     {
-        if (! $this->http) {
+        if (!$this->http) {
             $this->http = Http::withOptions([
                 'debug' => $this->debug,
             ])->acceptJson();

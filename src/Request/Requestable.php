@@ -13,5 +13,5 @@ interface Requestable
 
     public function get(string $query, ?Inputable $input = null): Response;
 
-    public function post(string $query, Inputable $input = null): Response;
+    public function post(string $query, Inputable $input): Response;
 }
