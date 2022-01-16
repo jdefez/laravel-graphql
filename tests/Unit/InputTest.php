@@ -4,7 +4,6 @@ namespace Jdefez\LaravelGraphql\tests\Unit;
 
 use Jdefez\LaravelGraphql\Inputs\Inputable;
 use Jdefez\LaravelGraphql\tests\Inputs\MandateInput;
-use Jdefez\LaravelGraphql\tests\Inputs\MandateInputCollection;
 use Jdefez\LaravelGraphql\tests\Inputs\UserInput;
 use Jdefez\LaravelGraphql\tests\TestCase;
 
@@ -37,42 +36,16 @@ class InputTest extends TestCase
     }
 
     /** @test */
-    public function create_relation_is_not_rendered_when_collection_is_empty()
-    {
-        $this->input->create(
-            new MandateInputCollection(
-                'mandates',
-                [
-                    // empty collection of mandates input
-                ]
-            )
-        );
-
-        $this->assertArrayNotHasKey(
-            'mandates',
-            $this->input->toArray()
-        );
-    }
-
-    /** @test */
     public function it_renders_create_relation()
     {
         $this->input->create(
-            new MandateInputCollection(
-                'mandates',
-                [
-                    new MandateInput(
-                        1,
-                        'Representant syndical',
-                        960
-                    ),
-                    new MandateInput(
-                        2,
-                        'Elu titulaire',
-                        1440
-                    ),
-                ]
-            )
+            'mandates',
+            (new MandateInput('Representant syndical', 960))
+                ->connect('mandateDefinition', 1)
+                ->connect('commitee', 1),
+            (new MandateInput('Elu titulaire', 1440))
+                ->connect('mandateDefinition', 2)
+                ->connect('commitee', 1),
         );
 
         $this->assertEquals(
@@ -83,12 +56,14 @@ class InputTest extends TestCase
                 'mandates' => [
                     'create' => [
                         [
-                            'mandate_definition_id' => 1,
+                            'mandateDefinition' => ['connect' => 1],
+                            'commitee' => ['connect' => 1],
                             'credit' => 960,
                             'label' => 'Representant syndical'
                         ],
                         [
-                            'mandate_definition_id' => 2,
+                            'mandateDefinition' => ['connect' => 2],
+                            'commitee' => ['connect' => 1],
                             'credit' => 1440,
                             'label' => 'Elu titulaire'
                         ]

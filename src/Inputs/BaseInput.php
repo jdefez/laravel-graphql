@@ -2,7 +2,7 @@
 
 namespace Jdefez\LaravelGraphql\Inputs;
 
-/*
+/**
     json input examples
 
     {
@@ -83,144 +83,87 @@ namespace Jdefez\LaravelGraphql\Inputs;
     }
  */
 
-/*
-    api
+/**
+    API
 
     (new UserInput(
         firstname: 'jean',
         lastname: 'defez',
         email: 'jdefez@gmail.com'
-    ))->connect($inputCollection)
-      ->sync($inputCollection)
-      ->create($inputCollection)
-      ->toArray();
-
-    (new UserInput(
-        firstname: 'jean',
-        lastname: 'defez',
-        email: 'jdefez@gmail.com'
-    ))->connect('relationName', $input, $input, ...)
-      ->sync('relationName', 1, 2, 3, 4)
+    ))->connect('relationName', $input, 134, ...)
+      ->sync('relationName', 1, $input, 3, 4)
       ->create('relationName', $input, $input, ...)
       ->toArray();
 */
 
 abstract class BaseInput implements Inputable
 {
-    /** @var array */
     private array $relations = [];
 
     public abstract function toArray(): array;
 
-    // todo: list possible types
-    // InputableCollection|array<int>|int
-    //
-    // todo: this should:
-    //  - havel a relation name
-    //  - handle a list of models
-    //  - InputableCollection is handled internaly
-    public function connect(InputableCollection $collection): BaseInput
-    {
-        $this->setRelation('connect', $collection);
-
-        return $this;
+    /**
+     * @param array<Inputable>|array<int> $inputs
+     */
+    public function connect(
+        string $relationName,
+        Inputable|int ...$inputs
+    ): BaseInput {
+        return $this->appendRelation('connect', $relationName, $inputs);
     }
 
     public function disconnect(string $relationName, bool $input): BaseInput
     {
-        // todo: implement
-        //
-        // {
-        //    $relationName: { disconnect: $input }
-        // }
+        $this->relations[$relationName]['disconnect'] = $input;
+
         return $this;
     }
 
-    // todo: list possible types
-    // InputableCollection|array<int>|int
-    public function sync(InputableCollection $collection): BaseInput
+    /**
+     * @param array<Inputable>|array<int> $inputs
+     */
+    public function sync(string $relationName, Inputable|int ...$inputs): BaseInput
     {
-        $this->setRelation('sync', $collection);
-
-        return $this;
+        return $this->appendRelation('sync', $relationName, $inputs);
     }
 
     public function delete(string $relationName, bool $input): BaseInput
     {
-        // todo: implement
-
-        // {
-        //    $relationName: { delete: $input }
-        // }
+        $this->relations[$relationName]['disconnect'] = $input;
 
         return $this;
     }
 
-    // todo: this should:
-    //  - havel a relation name
-    //  - handle a list of models
-    //  - InputableCollection is handled internaly
-    public function create(InputableCollection $collection): BaseInput
+    /**
+     * @param array<Inputable> $inputs
+     */
+    public function create(string $relationName, Inputable ...$inputs): BaseInput
     {
-        $this->setRelation('create', $collection);
-
-        return $this;
+        return $this->appendRelation('create', $relationName, $inputs);
     }
 
-    // todo: this should:
-    //  - havel a relation name
-    //  - handle a list of models
-    //  - InputableCollection is handled internaly
-    public function update(InputableCollection $collection): BaseInput
+    /**
+     * @param array<Inputable> $inputs
+     */
+    public function update(string $relationName, Inputable ...$inputs): BaseInput
     {
-        $this->setRelation('update', $collection);
-
-        return $this;
+        return $this->appendRelation('update', $relationName, $inputs);
     }
 
-    // todo: this should:
-    //  - havel a relation name
-    //  - handle a list of models
-    //  - InputableCollection is handled internaly
-    public function upsert(InputableCollection $collection): BaseInput
+    /**
+     * @param array<Inputable> $inputs
+     */
+    public function upsert(string $relationName, Inputable ...$inputs): BaseInput
     {
-        $this->setRelation('upsert', $collection);
-
-        return $this;
+        return $this->appendRelation('upsert', $relationName, $inputs);
     }
 
     public function relationsToArray(array $attributes): array
     {
-        $attributes = $this->forgetIdWhenNull($attributes);
-
-        foreach ($this->relations as $type => $collections) {
-            foreach ($collections as $collection) {
-
-                // todo: handle all collection types
-
-                $attributes = $this->appendRelation(
-                    $collection,
-                    $attributes,
-                    $type
-                );
-            }
-        }
-
-        return $attributes;
-    }
-
-    protected function appendRelation(
-        InputableCollection $collection,
-        array $attributes,
-        string $relationType
-    ): array {
-        if (!$collection->isEmpty()) {
-            $attributes[$collection->name] = [
-                $relationType => $collection->toArray()
-            ];
-        }
-
-        return $attributes;
+        return array_merge(
+            $this->forgetIdWhenNull($attributes),
+            $this->relations
+        );
     }
 
     protected function forgetIdWhenNull(array $attributes): array
@@ -235,8 +178,28 @@ abstract class BaseInput implements Inputable
         return $attributes;
     }
 
-    protected function setRelation(string $type, InputableCollection $collection): void
-    {
-        $this->relations[$type][] = $collection;
+    protected function appendRelation(
+        string $relationType,
+        string $relationName,
+        array $inputs
+    ): BaseInput {
+        if (!empty($inputs)) {
+            $inputs = collect($inputs)
+                ->map(function ($item) {
+                    if ($item instanceof Inputable) {
+                        $item = $item->toArray();
+                    }
+
+                    return $item;
+                });
+
+            if ($inputs->count() === 1) {
+                $this->relations[$relationName][$relationType] = $inputs->first();
+            } else {
+                $this->relations[$relationName][$relationType] = $inputs->toArray();
+            }
+        }
+
+        return $this;
     }
 }
