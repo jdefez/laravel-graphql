@@ -2,10 +2,10 @@
 
 namespace Jdefez\LaravelGraphql\tests\Unit;
 
-use Jdefez\LaravelGraphql\Inputs\BaseInput;
-use Jdefez\LaravelGraphql\Inputs\BaseInputCollection;
 use Jdefez\LaravelGraphql\Inputs\Inputable;
-use Jdefez\LaravelGraphql\Inputs\InputableCollection;
+use Jdefez\LaravelGraphql\tests\Inputs\MandateInput;
+use Jdefez\LaravelGraphql\tests\Inputs\MandateInputCollection;
+use Jdefez\LaravelGraphql\tests\Inputs\UserInput;
 use Jdefez\LaravelGraphql\tests\TestCase;
 
 class InputTest extends TestCase
@@ -16,30 +16,11 @@ class InputTest extends TestCase
     {
         parent::setUp();
 
-        $this->input = new class(
-            'jean',
-            'defez',
-            'jdefez@gmail.com'
-        ) extends BaseInput implements Inputable
-        {
-            public function __construct(
-                public string $firstname,
-                public string $lastname,
-                public string $email,
-                public ?int $id = null,
-            ) {
-            }
-
-            public function toArray(): array
-            {
-                return parent::relationsToArray([
-                    'firstname' => $this->firstname,
-                    'lastname' => $this->lastname,
-                    'email' => $this->email,
-                    'id' => $this->id
-                ]);
-            }
-        };
+        $this->input = new UserInput(
+            'Anita',
+            'Badnews',
+            'abadnews@gmail.com'
+        );
     }
 
     /** @test */
@@ -47,30 +28,24 @@ class InputTest extends TestCase
     {
         $this->assertEquals(
             [
-                'firstname' => 'jean',
-                'lastname' => 'defez',
-                'email' => 'jdefez@gmail.com',
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
             ],
             $this->input->toArray()
         );
     }
 
     /** @test */
-    public function relation_is_not_rendered_when_collection_is_empty()
+    public function create_relation_is_not_rendered_when_collection_is_empty()
     {
         $this->input->create(
-            new class(
+            new MandateInputCollection(
                 'mandates',
                 [
                     // empty collection of mandates input
                 ]
-            ) extends BaseInputCollection implements InputableCollection {
-                public function __construct(
-                    public string $name,
-                    public array $inputs,
-                ) {
-                }
-            }
+            )
         );
 
         $this->assertArrayNotHasKey(
@@ -83,32 +58,37 @@ class InputTest extends TestCase
     public function it_renders_create_relation()
     {
         $this->input->create(
-            new class(
+            new MandateInputCollection(
                 'mandates',
                 [
-                    // mandates input to be used
+                    new MandateInput(
+                        1,
+                        'Representant syndical',
+                        960
+                    ),
+                    new MandateInput(
+                        2,
+                        'Elu titulaire',
+                        1440
+                    ),
                 ]
-            ) extends BaseInputCollection implements InputableCollection {
-                public function __construct(
-                    public string $name,
-                    public array $inputs,
-                ) {
-                }
-            }
+            )
         );
 
         $this->assertEquals(
             [
-                'firstname' => 'jean',
-                'lastname' => 'defez',
-                'email' => 'jdefez@gmail.com',
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
                 'mandates' => [
                     'create' => [
                         [
+                            'mandate_definition_id' => 1,
                             'credit' => 960,
                             'label' => 'Representant syndical'
                         ],
                         [
+                            'mandate_definition_id' => 2,
                             'credit' => 1440,
                             'label' => 'Elu titulaire'
                         ]
