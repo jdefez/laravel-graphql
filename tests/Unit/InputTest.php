@@ -23,7 +23,7 @@ class InputTest extends TestCase
     }
 
     /** @test */
-    public function it_renders_base_attributes()
+    public function it_renders_base_attributes(): void
     {
         $this->assertEquals(
             [
@@ -36,7 +36,7 @@ class InputTest extends TestCase
     }
 
     /** @test */
-    public function it_renders_create_relation()
+    public function it_renders_create_relation(): void
     {
         $this->input->create(
             'mandates',

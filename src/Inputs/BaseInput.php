@@ -158,7 +158,7 @@ abstract class BaseInput implements Inputable
         return $this->appendRelation('upsert', $relationName, $inputs);
     }
 
-    public function relationsToArray(array $attributes): array
+    protected function relationsToArray(array $attributes): array
     {
         return array_merge(
             $this->forgetIdWhenNull($attributes),
