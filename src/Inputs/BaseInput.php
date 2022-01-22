@@ -3,89 +3,7 @@
 namespace Jdefez\LaravelGraphql\Inputs;
 
 /**
-    json input examples
-
-    {
-        "input": {
-            "firstname": "HUGO",
-            "lastname": "DUPONT",
-            "email": "hdupont@elior.fr",
-            "managers": {
-                "sync": [
-                    {
-                        "manager_id": 7
-                    }
-                ]
-            },
-            "commitees": {
-                "sync": [
-                    {
-                        "commitee_id": 152,
-                        "matricule": "00123456 - 9001",
-                        "role": "user"
-                    }
-                ]
-            },
-            "mandates": {
-                "create": [
-                    {
-                        "mandateDefinition": {
-                            "connect" : 3
-                        },
-                        "commitee": {
-                            "connect": 152
-                        },
-                        "credit": 960,
-                        "label": "Repr\u00e9sentant syndical au CSEC"
-                    }
-                ]
-            }
-        }
-    }
-
-    mutation {
-        updateUser(
-            input: {
-                id: 3
-                name: "Phillip"
-                posts: {
-                    create: [{ title: "A new post" }]
-                    update: [{ id: 45, title: "This post is updated" }]
-                    delete: [8]
-                    connect: [1, 2, 3]
-                    disconnect: [6]
-                }
-            }
-        ) {
-            id
-            posts {
-                id
-            }
-        }
-    }
-
-    mutation {
-        createPost(
-            input: {
-                title: "My new Post"
-                authors: {
-                    create: [{ name: "Herbert" }]
-                    upsert: [{ id: 2000, name: "Newton" }]
-                    connect: [123]
-                }
-            }
-        ) {
-            id
-            authors {
-                name
-            }
-        }
-    }
- */
-
-/**
     API
-
     (new UserInput(
         firstname: 'jean',
         lastname: 'defez',
@@ -94,20 +12,17 @@ namespace Jdefez\LaravelGraphql\Inputs;
       ->sync('relationName', 1, $input, 3, 4)
       ->create('relationName', $input, $input, ...)
       ->toArray();
-*/
+ */
 
 abstract class BaseInput implements Inputable
 {
     private array $relations = [];
 
-    public abstract function toArray(): array;
+    abstract public function toArray(): array;
 
-    /**
-     * @param array<Inputable>|array<int> $inputs
-     */
     public function connect(
         string $relationName,
-        Inputable|int ...$inputs
+        Inputable|int|array ...$inputs
     ): BaseInput {
         return $this->appendRelation('connect', $relationName, $inputs);
     }
@@ -119,11 +34,10 @@ abstract class BaseInput implements Inputable
         return $this;
     }
 
-    /**
-     * @param array<Inputable>|array<int> $inputs
-     */
-    public function sync(string $relationName, Inputable|int ...$inputs): BaseInput
-    {
+    public function sync(
+        string $relationName,
+        Inputable|array|int ...$inputs
+    ): BaseInput {
         return $this->appendRelation('sync', $relationName, $inputs);
     }
 
@@ -168,8 +82,7 @@ abstract class BaseInput implements Inputable
 
     protected function forgetIdWhenNull(array $attributes): array
     {
-        if (
-            array_key_exists('id', $attributes)
+        if (array_key_exists('id', $attributes)
             && is_null($attributes['id'])
         ) {
             unset($attributes['id']);
@@ -184,14 +97,13 @@ abstract class BaseInput implements Inputable
         array $inputs
     ): BaseInput {
         if (!empty($inputs)) {
-            $inputs = collect($inputs)
-                ->map(function ($item) {
-                    if ($item instanceof Inputable) {
-                        $item = $item->toArray();
-                    }
+            $inputs = collect($inputs)->map(function (mixed $item) {
+                if ($item instanceof Inputable) {
+                    $item = $item->toArray();
+                }
 
-                    return $item;
-                });
+                return $item;
+            });
 
             if ($inputs->count() === 1) {
                 $this->relations[$relationName][$relationType] = $inputs->first();
