@@ -25,6 +25,18 @@ class InputTest extends TestCase
     }
 
     /** @test */
+    public function reflection_helper_test()
+    {
+        $this->assertEquals(
+            [
+                'commitee_id' => 123,
+                'matricule' => 'z6po'
+            ],
+            (new CommiteeUserInput(commitee_id: 123, matricule: 'z6po'))->toArray()
+        );
+    }
+
+    /** @test */
     public function it_renders_base_attributes(): void
     {
         $this->assertEquals(

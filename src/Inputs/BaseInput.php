@@ -2,23 +2,41 @@
 
 namespace Jdefez\LaravelGraphql\Inputs;
 
+use ReflectionClass;
+use ReflectionProperty;
+
 /**
-    API
-    (new UserInput(
-        firstname: 'jean',
-        lastname: 'defez',
-        email: 'jdefez@gmail.com'
-    ))->connect('relationName', $input, 134, ...)
-      ->sync('relationName', 1, $input, 3, 4)
-      ->create('relationName', $input, $input, ...)
-      ->toArray();
+ * -----------
+ * API example
+ * -----------
+ *
+ * (new UserInput(
+ *     firstname: 'jean',
+ *     lastname: 'defez',
+ *     email: 'jdefez@gmail.com'
+ * ))->connect('relationName', $input, 134, ...)
+ *   ->sync('relationName', 1, $input, 3, 4)
+ *   ->create('relationName', $input, $input, ...)
+ *   ...
+ *   ->toArray();
  */
 
 abstract class BaseInput implements Inputable
 {
+    public const EXCLUDE_NULL_PROPERTIES = true;
+
+    public const RENDER_ALL_PROPERTIES = false;
+
     private array $relations = [];
 
-    abstract public function toArray(): array;
+    protected bool $toArrayStrategy = self::RENDER_ALL_PROPERTIES;
+
+    public function toArray(): array
+    {
+        return $this->relationsToArray(
+            $this->getProperties($this)
+        );
+    }
 
     public function connect(
         string $relationName,
@@ -74,28 +92,11 @@ abstract class BaseInput implements Inputable
 
     protected function relationsToArray(array $attributes): array
     {
-        return array_merge(
-            $this->forgetIdWhenNull($attributes),
-            $this->relations
-        );
+        return array_merge($attributes, $this->relations);
     }
 
-    protected function forgetIdWhenNull(array $attributes): array
+    protected function appendRelation(string $type, string $name, array $inputs): BaseInput
     {
-        if (array_key_exists('id', $attributes)
-            && is_null($attributes['id'])
-        ) {
-            unset($attributes['id']);
-        }
-
-        return $attributes;
-    }
-
-    protected function appendRelation(
-        string $relationType,
-        string $relationName,
-        array $inputs
-    ): BaseInput {
         if (!empty($inputs)) {
             $inputs = collect($inputs)->map(function (mixed $item) {
                 if ($item instanceof Inputable) {
@@ -106,12 +107,48 @@ abstract class BaseInput implements Inputable
             });
 
             if ($inputs->count() === 1) {
-                $this->relations[$relationName][$relationType] = $inputs->first();
+                $this->relations[$name][$type] = $inputs->first();
             } else {
-                $this->relations[$relationName][$relationType] = $inputs->toArray();
+                $this->relations[$name][$type] = $inputs->toArray();
             }
         }
 
         return $this;
+    }
+
+    protected function getProperties(object $class): array
+    {
+        $list = [];
+
+        foreach ($this->getPublicPropertiesNames($class) as $name) {
+            $value = $this->{$name};
+
+            // always forget id attribute when null
+
+            if (strtolower($name) === 'id' && is_null($value)) {
+                continue;
+            }
+
+            if (is_null($value)
+                && $this->toArrayStrategy === self::EXCLUDE_NULL_PROPERTIES
+            ) {
+                continue;
+            }
+
+            $list[$name] = $value;
+        }
+
+        return $list;
+    }
+
+    protected function getPublicPropertiesNames(object $class): array
+    {
+        $properties = (new ReflectionClass($class))
+            ->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        return array_map(
+            fn (ReflectionProperty $prop) => $prop->name,
+            $properties
+        );
     }
 }

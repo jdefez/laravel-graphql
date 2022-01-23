@@ -14,15 +14,5 @@ class UserInput extends BaseInput implements Inputable
         public ?int $id = null,
     ) {
     }
-
-    public function toArray(): array
-    {
-        return parent::relationsToArray([
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'email' => $this->email,
-            'id' => $this->id
-        ]);
-    }
 }
 

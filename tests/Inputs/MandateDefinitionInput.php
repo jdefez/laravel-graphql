@@ -13,13 +13,4 @@ class MandateDefinitionInput extends BaseInput implements Inputable
         public ?int $id = null,
     ) {
     }
-
-    public function toArray(): array
-    {
-        return parent::relationsToArray([
-            'label' => $this->label,
-            'credit' => $this->credit,
-            'id' => $this->id,
-        ]);
-    }
 }
