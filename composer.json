@@ -7,15 +7,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Jdefez\\LaravelGraphql\\": "src",
-            "Jdefez\\LaravelGraphql\\tests\\": "tests",
-            "Jdefez\\LaravelGraphql\\examples\\": "examples"
+            "Jdefez\\LaravelGraphql\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jdefez\\LaravelGraphql\\tests\\": "tests",
-            "Jdefez\\LaravelGraphql\\examples\\": "examples"
+            "Jdefez\\LaravelGraphql\\tests\\": "tests"
         }
     },
     "authors": [
