@@ -38,6 +38,31 @@ abstract class BaseInput implements Inputable
         );
     }
 
+    // Laravel's sync(), syncWithoutDetach() or connect() methods allow you to
+    // pass an array where the keys are IDs of related models and the values
+    // are pivot data.
+    //
+    // Lighthouse exposes this capability through the nested
+    // operations on many-to-many relations. Instead of passing just a list of
+    // ids, you can define an input type that also contains pivot data.
+    //
+    // It must contain a field called id to contain the ID of the related
+    // model, all other fields will be inserted into the pivot table.
+
+    public function syncWithoutDetaching(
+        string $relationName,
+        Inputable|array|int ...$inputs
+    ): BaseInput {
+        return $this->appendRelation('syncWithoutDetaching', $relationName, $inputs);
+    }
+
+    public function sync(
+        string $relationName,
+        Inputable|array|int ...$inputs
+    ): BaseInput {
+        return $this->appendRelation('sync', $relationName, $inputs);
+    }
+
     public function connect(
         string $relationName,
         Inputable|int|array ...$inputs
@@ -50,13 +75,6 @@ abstract class BaseInput implements Inputable
         $this->relations[$relationName]['disconnect'] = $input;
 
         return $this;
-    }
-
-    public function sync(
-        string $relationName,
-        Inputable|array|int ...$inputs
-    ): BaseInput {
-        return $this->appendRelation('sync', $relationName, $inputs);
     }
 
     public function delete(string $relationName, bool $input): BaseInput

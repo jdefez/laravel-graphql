@@ -25,18 +25,6 @@ class InputTest extends TestCase
     }
 
     /** @test */
-    public function reflection_helper_test()
-    {
-        $this->assertEquals(
-            [
-                'commitee_id' => 123,
-                'matricule' => 'z6po'
-            ],
-            (new CommiteeUserInput(commitee_id: 123, matricule: 'z6po'))->toArray()
-        );
-    }
-
-    /** @test */
     public function it_renders_base_attributes(): void
     {
         $this->assertEquals(
@@ -153,6 +141,130 @@ class InputTest extends TestCase
                 'label' => 'Representant syndical'
             ],
             $input->toArray()
+        );
+    }
+
+    /** @test */
+    public function sync_relation_renders_has_an_array_of_objects(): void
+    {
+        $this->markTestIncomplete('todo: implement');
+    }
+
+    /** @test */
+    public function sync_relation_renders_has_an_single_objects(): void
+    {
+        $this->markTestIncomplete('todo: implement');
+    }
+
+    /** @test */
+    public function sync_relation_renders_has_one_int(): void
+    {
+        $this->markTestIncomplete('todo: implement');
+    }
+
+    /** @test */
+    public function sync_relation_renders_has_array_of_int(): void
+    {
+        $this->markTestIncomplete('todo: implement');
+    }
+
+    /** @test */
+    public function sync_relation_renders_has_an_array_of_int(): void
+    {
+        $this->markTestIncomplete('todo: implement');
+    }
+
+    /** @test */
+    public function it_renders_upsert_relation(): void
+    {
+        $this->input->upsert(
+            'mandates',
+            (new MandateInput(
+                label: 'Representant syndical',
+                credit: 960,
+                id: 3,
+            ))->connect('mandateDefinition', 1)
+                ->connect('commitee', 1),
+            (new MandateInput(
+                label: 'Elu titulaire',
+                credit: 1440,
+                id: 4,
+            ))->connect('mandateDefinition', 2)
+                ->connect('commitee', 1),
+        );
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'mandates' => [
+                    'upsert' => [
+                        [
+                            'mandateDefinition' => ['connect' => 1],
+                            'commitee' => ['connect' => 1],
+                            'credit' => 960,
+                            'label' => 'Representant syndical',
+                            'id' => 3,
+                        ],
+                        [
+                            'mandateDefinition' => ['connect' => 2],
+                            'commitee' => ['connect' => 1],
+                            'credit' => 1440,
+                            'label' => 'Elu titulaire',
+                            'id' => 4,
+                        ]
+                    ]
+                ]
+            ],
+            $this->input->toArray()
+        );
+    }
+
+    /** @test */
+    public function it_renders_update_relation(): void
+    {
+        $this->input->update(
+            'mandates',
+            (new MandateInput(
+                label: 'Representant syndical',
+                credit: 960,
+                id: 3,
+            ))->connect('mandateDefinition', 1)
+                ->connect('commitee', 1),
+            (new MandateInput(
+                label: 'Elu titulaire',
+                credit: 1440,
+                id: 4,
+            ))->connect('mandateDefinition', 2)
+                ->connect('commitee', 1),
+        );
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'mandates' => [
+                    'update' => [
+                        [
+                            'mandateDefinition' => ['connect' => 1],
+                            'commitee' => ['connect' => 1],
+                            'credit' => 960,
+                            'label' => 'Representant syndical',
+                            'id' => 3,
+                        ],
+                        [
+                            'mandateDefinition' => ['connect' => 2],
+                            'commitee' => ['connect' => 1],
+                            'credit' => 1440,
+                            'label' => 'Elu titulaire',
+                            'id' => 4,
+                        ]
+                    ]
+                ]
+            ],
+            $this->input->toArray()
         );
     }
 
