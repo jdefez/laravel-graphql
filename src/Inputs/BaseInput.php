@@ -38,6 +38,8 @@ abstract class BaseInput implements Inputable
         );
     }
 
+    // from lighthouse doc
+    // -------------------
     // Laravel's sync(), syncWithoutDetach() or connect() methods allow you to
     // pass an array where the keys are IDs of related models and the values
     // are pivot data.
@@ -113,8 +115,11 @@ abstract class BaseInput implements Inputable
         return array_merge($attributes, $this->relations);
     }
 
-    protected function appendRelation(string $type, string $name, array $inputs): BaseInput
-    {
+    protected function appendRelation(
+        string $type,
+        string $name,
+        array $inputs
+    ): BaseInput {
         if (!empty($inputs)) {
             $inputs = collect($inputs)->map(function (mixed $item) {
                 if ($item instanceof Inputable) {
