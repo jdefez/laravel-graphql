@@ -3,6 +3,7 @@
 namespace Jdefez\LaravelGraphql\Inputs;
 
 use Exception;
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -239,7 +240,7 @@ abstract class BaseInput implements Inputable
         );
     }
 
-    private function extractCallParameters(string $name): array
+    protected function extractCallParameters(string $name): array
     {
         $relation = null;
         $method = $this->extractCalledMethod($name);
@@ -251,10 +252,10 @@ abstract class BaseInput implements Inputable
         return [$method, $relation];
     }
 
-    private function extractCalledMethod(string $name): ?string
+    protected function extractCalledMethod(string $name): ?string
     {
         foreach ($this->relationsNames as $method) {
-            if (strstr($name, $method) !== false) {
+            if (Str::of($name)->startsWith($method)) {
                 return $method;
             }
         }
@@ -262,7 +263,7 @@ abstract class BaseInput implements Inputable
         return null;
     }
 
-    private function toSnakeCase(string $input): string
+    protected function toSnakeCase(string $input): string
     {
         return strtolower(preg_replace(
             ['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'],
