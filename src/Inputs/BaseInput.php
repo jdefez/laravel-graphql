@@ -2,12 +2,69 @@
 
 namespace Jdefez\LaravelGraphql\Inputs;
 
+use Exception;
 use ReflectionClass;
 use ReflectionProperty;
 
 /**
+ * from lighthouse doc
+ * -------------------
+ * Laravel's sync(), syncWithoutDetach() or connect() methods allow you to
+ * pass an array where the keys are IDs of related models and the values
+ * are pivot data.
+ *
+ * Lighthouse exposes this capability through the nested
+ * operations on many-to-many relations. Instead of passing just a list of
+ * ids, you can define an input type that also contains pivot data.
+ *
+ * It must contain a field called id to contain the ID of the related
+ * model, all other fields will be inserted into the pivot table.
+ *
  * -----------
- * API example
+ * relations
+ * -----------
+ * _
+ * HasOne:
+ *  - create: CreatePhoneInput
+ *  - update: UpdatePhoneInput
+ *  - upsert: UpsertPhoneInput
+ *  - delete: ID
+ *
+ * _
+ * HasMany:
+ *  - create: [CreatePostInput!]
+ *  - update: [UpdatePostInput!]
+ *  - upsert: [UpsertPostInput!]
+ *  - delete: [ID!]
+ *  - connect: [ID!]
+ *  - disconnect: [ID!]
+ *
+ * _
+ * BelongsToMany:
+ *  - create: [CreateAuthorInput!]
+ *  - connect: [ID!]
+ *  - update: [UpdateAuthorInput!]
+ *  - upsert: [UpsertAuthorInput!]
+ *  - sync: [ID!]
+ *  - syncWithoutDetaching: [ID!]
+ *  - delete: [ID!]
+ *  - disconnect: [ID!]
+ *
+ * _
+ * MorphTo:
+ *  - connect: ConnectImageableInput
+ *  - disconnect: Boolean
+ *  - delete: Boolean
+ *
+ * _
+ * MorphMany:
+ *  - create: [CreateAuthorInput!]
+ *  - upsert: [UpsertAuthorInput!]
+ *  - connect: [ID!]
+ *  - sync: [ID!] to ensure only the given IDs will be contained withing the relation.
+ *
+ * -----------
+ * API
  * -----------
  *
  * (new UserInput(
@@ -19,6 +76,8 @@ use ReflectionProperty;
  *   ->create('relationName', $input, $input, ...)
  *   ...
  *   ->toArray();
+ *
+ *   what a bout magic methods like: createUsers([...])
  */
 
 abstract class BaseInput implements Inputable
@@ -26,6 +85,18 @@ abstract class BaseInput implements Inputable
     public const EXCLUDE_NULL_PROPERTIES = true;
 
     public const RENDER_ALL_PROPERTIES = false;
+
+    private array $relationsNames = [
+        // note: has to remain sorted by longest name
+        'syncWithoutDetaching',
+        'disconnect',
+        'connect',
+        'create',
+        'update',
+        'upsert',
+        'delete',
+        'sync',
+    ];
 
     private array $relations = [];
 
@@ -38,18 +109,19 @@ abstract class BaseInput implements Inputable
         );
     }
 
-    // from lighthouse doc
-    // -------------------
-    // Laravel's sync(), syncWithoutDetach() or connect() methods allow you to
-    // pass an array where the keys are IDs of related models and the values
-    // are pivot data.
-    //
-    // Lighthouse exposes this capability through the nested
-    // operations on many-to-many relations. Instead of passing just a list of
-    // ids, you can define an input type that also contains pivot data.
-    //
-    // It must contain a field called id to contain the ID of the related
-    // model, all other fields will be inserted into the pivot table.
+    public function __call(string $name, array $arguments): BaseInput
+    {
+        list($method, $relation) = $this->extractCallParameters($name);
+
+        if (!$method) {
+            throw new Exception(sprintf(
+                'Unexpected call to `%s` method',
+                $name
+            ));
+        }
+
+        return $this->{$method}($relation, ...$arguments);
+    }
 
     public function syncWithoutDetaching(
         string $relationName,
@@ -72,16 +144,16 @@ abstract class BaseInput implements Inputable
         return $this->appendRelation('connect', $relationName, $inputs);
     }
 
-    public function disconnect(string $relationName, bool $input): BaseInput
+    public function disconnect(string $relationName, bool|array $inputs): BaseInput
     {
-        $this->relations[$relationName]['disconnect'] = $input;
+        $this->relations[$relationName]['disconnect'] = $inputs;
 
         return $this;
     }
 
-    public function delete(string $relationName, bool $input): BaseInput
+    public function delete(string $relationName, bool|array $inputs): BaseInput
     {
-        $this->relations[$relationName]['disconnect'] = $input;
+        $this->relations[$relationName]['delete'] = $inputs;
 
         return $this;
     }
@@ -152,7 +224,8 @@ abstract class BaseInput implements Inputable
                 continue;
             }
 
-            if (is_null($value)
+            if (
+                is_null($value)
                 && $this->toArrayStrategy === self::EXCLUDE_NULL_PROPERTIES
             ) {
                 continue;
@@ -170,8 +243,40 @@ abstract class BaseInput implements Inputable
             ->getProperties(ReflectionProperty::IS_PUBLIC);
 
         return array_map(
-            fn (ReflectionProperty $prop) => $prop->name,
+            fn (ReflectionProperty $prop): string => $prop->name,
             $properties
         );
+    }
+
+    private function extractCallParameters(string $name): array
+    {
+        $relation = null;
+        $method = $this->extractCalledMethod($name);
+
+        if ($method) {
+            $relation = $this->toSnakeCase(str_replace($method, '', $name));
+        }
+
+        return [$method, $relation];
+    }
+
+    private function extractCalledMethod(string $name): ?string
+    {
+        foreach ($this->relationsNames as $method) {
+            if (strstr($name, $method) !== false) {
+                return $method;
+            }
+        }
+
+        return null;
+    }
+
+    private function toSnakeCase(string $input): string
+    {
+        return strtolower(preg_replace(
+            ['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'],
+            '$1_$2',
+            $input
+        ));
     }
 }

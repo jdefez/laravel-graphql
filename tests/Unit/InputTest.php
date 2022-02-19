@@ -145,33 +145,174 @@ class InputTest extends TestCase
     }
 
     /** @test */
+    public function disconnect_relation_is_rendered(): void
+    {
+        $this->input->disconnect('mandates', [2, 3]);
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'mandates' => [
+                    'disconnect' => [2, 3]
+                ]
+            ],
+            $this->input->toArray()
+        );
+    }
+
+    /** @test */
+    public function delete_relation_is_redered(): void
+    {
+        $this->input->delete('mandates', [2, 3]);
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'mandates' => [
+                    'delete' => [2, 3]
+                ]
+            ],
+            $this->input->toArray()
+        );
+    }
+
+    /** @test */
+    public function it_renders_sync_magic_method(): void
+    {
+        $this->input->syncCommitees([6, 7]);
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'sync' => [6, 7]
+                ]
+            ],
+            $this->input->toArray()
+        );
+    }
+
+    /** @test */
     public function sync_relation_renders_has_an_array_of_objects(): void
     {
-        $this->markTestIncomplete('todo: implement');
+        $this->input->sync('commitees', new CommiteeUserInput(
+            commitee_id: 2,
+            matricule: 'qjx212',
+            role: 'user',
+        ), new CommiteeUserInput(
+            commitee_id: 3,
+            matricule: 'qjx212',
+            role: 'user',
+        ));
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'sync' => [
+                        [
+                            'commitee_id' => 2,
+                            'matricule' => 'qjx212',
+                            'role' => 'user',
+                        ],
+                        [
+                            'commitee_id' => 3,
+                            'matricule' => 'qjx212',
+                            'role' => 'user',
+                        ],
+                    ]
+                ]
+            ],
+            $this->input->toArray()
+        );
     }
 
     /** @test */
     public function sync_relation_renders_has_an_single_objects(): void
     {
-        $this->markTestIncomplete('todo: implement');
+        $this->input->sync('commitees', new CommiteeUserInput(
+            commitee_id: 2,
+            matricule: 'qjx212',
+            role: 'user',
+        ));
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'sync' => [
+                        'commitee_id' => 2,
+                        'matricule' => 'qjx212',
+                        'role' => 'user',
+                    ]
+                ]
+            ],
+            $this->input->toArray()
+        );
     }
 
     /** @test */
     public function sync_relation_renders_has_one_int(): void
     {
-        $this->markTestIncomplete('todo: implement');
-    }
+        $this->input->sync('commitees', 6);
 
-    /** @test */
-    public function sync_relation_renders_has_array_of_int(): void
-    {
-        $this->markTestIncomplete('todo: implement');
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'sync' => 6
+                ]
+            ],
+            $this->input->toArray()
+        );
     }
 
     /** @test */
     public function sync_relation_renders_has_an_array_of_int(): void
     {
-        $this->markTestIncomplete('todo: implement');
+        $this->input->sync('commitees', [6, 13]);
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'sync' => [6, 13]
+                ]
+            ],
+            $this->input->toArray()
+        );
+    }
+
+    /** @test */
+    public function sync_without_detaching_method_is_rendered()
+    {
+        $this->input->syncWithoutDetaching('commitees', [6, 13]);
+
+        $this->assertEquals(
+            [
+                'firstname' => 'Anita',
+                'lastname' => 'Badnews',
+                'email' => 'abadnews@gmail.com',
+                'commitees' => [
+                    'syncWithoutDetaching' => [6, 13]
+                ]
+            ],
+            $this->input->toArray()
+        );
     }
 
     /** @test */
