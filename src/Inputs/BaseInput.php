@@ -125,58 +125,49 @@ abstract class BaseInput implements Inputable
 
     public function syncWithoutDetaching(
         string $relationName,
-        Inputable|array|int ...$inputs
+        Inputable|int ...$inputs
     ): BaseInput {
         return $this->appendRelation('syncWithoutDetaching', $relationName, $inputs);
     }
 
     public function sync(
         string $relationName,
-        Inputable|array|int ...$inputs
+        Inputable|int ...$inputs
     ): BaseInput {
         return $this->appendRelation('sync', $relationName, $inputs);
     }
 
     public function connect(
         string $relationName,
-        Inputable|int|array ...$inputs
+        Inputable|int ...$inputs
     ): BaseInput {
         return $this->appendRelation('connect', $relationName, $inputs);
     }
 
-    public function disconnect(string $relationName, bool|array $inputs): BaseInput
+    public function disconnect(string $relationName, bool|int ...$inputs): BaseInput
     {
         $this->relations[$relationName]['disconnect'] = $inputs;
 
         return $this;
     }
 
-    public function delete(string $relationName, bool|array $inputs): BaseInput
+    public function delete(string $relationName, bool|int ...$inputs): BaseInput
     {
         $this->relations[$relationName]['delete'] = $inputs;
 
         return $this;
     }
 
-    /**
-     * @param array<Inputable> $inputs
-     */
     public function create(string $relationName, Inputable ...$inputs): BaseInput
     {
         return $this->appendRelation('create', $relationName, $inputs);
     }
 
-    /**
-     * @param array<Inputable> $inputs
-     */
     public function update(string $relationName, Inputable ...$inputs): BaseInput
     {
         return $this->appendRelation('update', $relationName, $inputs);
     }
 
-    /**
-     * @param array<Inputable> $inputs
-     */
     public function upsert(string $relationName, Inputable ...$inputs): BaseInput
     {
         return $this->appendRelation('upsert', $relationName, $inputs);
