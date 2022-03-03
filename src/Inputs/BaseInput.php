@@ -10,6 +10,7 @@ use ReflectionProperty;
 /**
  * from lighthouse doc
  * -------------------
+ *
  * Laravel's sync(), syncWithoutDetach() or connect() methods allow you to
  * pass an array where the keys are IDs of related models and the values
  * are pivot data.
@@ -21,9 +22,8 @@ use ReflectionProperty;
  * It must contain a field called id to contain the ID of the related
  * model, all other fields will be inserted into the pivot table.
  *
- * -----------
  * relations
- * -----------
+ * ---------
  * _
  * HasOne:
  *  - create: CreatePhoneInput
@@ -64,9 +64,8 @@ use ReflectionProperty;
  *  - connect: [ID!]
  *  - sync: [ID!] to ensure only the given IDs will be contained withing the relation.
  *
- * -----------
  * API
- * -----------
+ * ---
  *
  * (new UserInput(
  *     firstname: 'jean',
