@@ -51,6 +51,50 @@ $response = Graphql::request('api/url')
 }
 ```
 
+## Using partial query
+
+It's about refactoring a portion of query in another class
+
+```php
+class AddressBuilder extends Builder
+{
+    public static function make(?array $arguments = null): static
+    {
+        return Builder::make($arguments)
+            ->zipcode()
+            ->street()
+            ->city()
+    }
+}
+
+$query = Builder::query()
+    ->user(
+        ['id' => 1],
+        fn (Builder $user) => $user
+            ->email()
+            ->name()
+            ->id()
+    )->addresses(
+        AddressBuilder::make(['trashed' => 'WITH'])
+    );
+
+echo $query->dump();
+
+// outputs
+//
+// query {
+//   user(id: 1) {
+//     email
+//     name
+//     id
+//   } addresses(trashed: WITH) {
+//     street
+//     city
+//     zipcode
+//   }
+// }
+```
+
 ## Mutations
 
 ```php

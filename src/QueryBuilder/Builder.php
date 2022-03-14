@@ -33,15 +33,28 @@ class Builder implements Buildable
         return new self('mutation', $arguments);
     }
 
-    public function __call(string $name, ?array $arguments = null): Builder
+    public static function make(?array $arguments = null): Builder
     {
-        $callback = $this->extractCallback($arguments);
-        $field = new self($name, $arguments);
-        $field->setParent($this);
-        $this->addField($field);
+        return new self(null, $arguments);
+    }
 
-        if ($callback) {
-            $callback($field);
+    public function __call(string $name, $arguments = null): Builder
+    {
+        $builder = $this->extractBuilder($arguments);
+
+        if ($builder) {
+            $builder->name = $name;
+            $builder->setParent($this);
+            $this->addField($builder);
+        } else {
+            $callback = $this->extractCallback($arguments);
+            $field = new self($name, $arguments);
+            $field->setParent($this);
+            $this->addField($field);
+
+            if ($callback) {
+                $callback($field);
+            }
         }
 
         return $this;
@@ -92,6 +105,21 @@ class Builder implements Buildable
         array_push($this->fields, $field);
 
         return $this;
+    }
+
+    protected function extractBuilder(?array &$arguments = null): ?Builder
+    {
+        $builder = null;
+        if (! empty($arguments)
+            && $arguments[count($arguments) - 1] instanceof Builder
+        ) {
+            $builder = array_pop($arguments);
+            if (isset($arguments[0])) {
+                $arguments = $arguments[0];
+            }
+        }
+
+        return $builder;
     }
 
     protected function extractCallback(?array &$arguments = null): ?callable

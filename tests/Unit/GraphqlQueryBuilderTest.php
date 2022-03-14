@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests\Unit;
+namespace Jdefez\LaravelGraphql\tests\Unit;
 
 use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
@@ -33,6 +33,31 @@ class GraphqlQueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_can_build_query_using_a_sub_builder()
+    {
+        $address_fields = Builder::make(['trashed' => 'WITH'])
+            ->zipcode()
+            ->street()
+            ->city();
+
+        $query = Builder::query()
+            ->user(
+                ['id' => 1],
+                fn (Builder $user) => $user
+                    ->email()
+                    ->name()
+                    ->id()
+            )->addresses(
+                $address_fields
+            );
+
+        $this->assertEquals(
+            'query { user(id: 1) { email name id } addresses(trashed: WITH) { street city zipcode }}',
+            $query->toString()
+        );
+    }
+
+    /** @test */
     public function it_can_build_a_mutation()
     {
         $query = Builder::mutation([
@@ -40,8 +65,8 @@ class GraphqlQueryBuilderTest extends TestCase
         ])->createUser(
             ['name' => '$name', 'email' => '$email'],
             fn (Builder $user) => $user
-                    ->name()
-                    ->email()
+                ->name()
+                ->email()
         );
 
         $this->assertEquals(
