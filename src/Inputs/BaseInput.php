@@ -215,8 +215,7 @@ abstract class BaseInput implements Inputable
                 continue;
             }
 
-            if (
-                is_null($value)
+            if (is_null($value)
                 && $this->toArrayStrategy === self::EXCLUDE_NULL_PROPERTIES
             ) {
                 continue;
