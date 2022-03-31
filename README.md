@@ -53,7 +53,9 @@ $response = Graphql::request('api/url')
 
 ## Using partial query
 
-It's about refactoring a portion of query in another class
+It's about refactoring a portion of query in another class.
+Graphql queries can be large and we may want to store some reusable parts of
+those queries.
 
 ```php
 class AddressBuilder extends Builder
