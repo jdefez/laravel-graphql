@@ -1,8 +1,16 @@
 # laravel-graphql
 
-This a work in progress repository.
-This consists in two facades:
+It consist of a set of Graphql utility classes to handle graphql request in a
+laravel based project.
 
- - QueryBuilder to build query string that can be sent to a graphql api.
- 
- - Request that can be used to send those queries to the graphql api.
+## A GraphQL query builder
+
+To build reusable GraphQL queries.
+
+## A GraphQL input class
+
+Used along with your queries when creating models for example.
+
+## A Client
+
+To post your queries and inputs to an given endpoint.
