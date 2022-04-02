@@ -27,14 +27,11 @@ class InputTest extends TestCase
     /** @test */
     public function it_renders_base_attributes(): void
     {
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -45,16 +42,13 @@ class InputTest extends TestCase
             credit: 1440,
         ))->connect('mandates', 12, 156, 2041);
 
-        $this->assertEquals(
-            [
-                'label' => 'some mandate definitin name',
-                'credit' => 1440,
-                'mandates' => [
-                    'connect' => [12, 156, 2041]
-                ]
-            ],
-            $definition->toArray()
-        );
+        $this->assertEquals([
+            'label' => 'some mandate definitin name',
+            'credit' => 1440,
+            'mandates' => [
+                'connect' => [12, 156, 2041]
+            ]
+        ], $definition->toArray());
     }
 
     /** @test */
@@ -73,26 +67,23 @@ class InputTest extends TestCase
             ),
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'connect' => [
-                        [
-                            'commitee_id' => 1230,
-                            'matricule' => 'k27',
-                            'role' => 'user',
-                        ],
-                        [
-                            'commitee_id' => 400,
-                        ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'connect' => [
+                    [
+                        'commitee_id' => 1230,
+                        'matricule' => 'k27',
+                        'role' => 'user',
+                    ],
+                    [
+                        'commitee_id' => 400,
                     ]
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -107,21 +98,18 @@ class InputTest extends TestCase
             )
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'connect' => [
-                        'commitee_id' => 1230,
-                        'matricule' => 'k27',
-                        'role' => 'user',
-                    ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'connect' => [
+                    'commitee_id' => 1230,
+                    'matricule' => 'k27',
+                    'role' => 'user',
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -131,15 +119,12 @@ class InputTest extends TestCase
             ->connect('mandateDefinition', 112)
             ->connect('commitee', 1);
 
-        $this->assertEquals(
-            [
-                'mandateDefinition' => ['connect' => 112],
-                'commitee' => ['connect' => 1],
-                'credit' => 960,
-                'label' => 'Representant syndical'
-            ],
-            $input->toArray()
-        );
+        $this->assertEquals([
+            'mandateDefinition' => ['connect' => 112],
+            'commitee' => ['connect' => 1],
+            'credit' => 960,
+            'label' => 'Representant syndical'
+        ], $input->toArray());
     }
 
     /** @test */
@@ -147,17 +132,14 @@ class InputTest extends TestCase
     {
         $this->input->disconnect('mandates', 2, 3);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'mandates' => [
-                    'disconnect' => [2, 3]
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'mandates' => [
+                'disconnect' => [2, 3]
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -165,17 +147,14 @@ class InputTest extends TestCase
     {
         $this->input->delete('mandates', 2, 3);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'mandates' => [
-                    'delete' => [2, 3]
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'mandates' => [
+                'delete' => [2, 3]
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -183,17 +162,14 @@ class InputTest extends TestCase
     {
         $this->input->syncCommitees(6, 7);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'sync' => [6, 7]
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'sync' => [6, 7]
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -213,28 +189,25 @@ class InputTest extends TestCase
             )
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'sync' => [
-                        [
-                            'commitee_id' => 2,
-                            'matricule' => 'qjx212',
-                            'role' => 'user',
-                        ],
-                        [
-                            'commitee_id' => 3,
-                            'matricule' => 'qjx212',
-                            'role' => 'user',
-                        ],
-                    ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'sync' => [
+                    [
+                        'commitee_id' => 2,
+                        'matricule' => 'qjx212',
+                        'role' => 'user',
+                    ],
+                    [
+                        'commitee_id' => 3,
+                        'matricule' => 'qjx212',
+                        'role' => 'user',
+                    ],
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -246,21 +219,18 @@ class InputTest extends TestCase
             role: 'user',
         ));
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'sync' => [
-                        'commitee_id' => 2,
-                        'matricule' => 'qjx212',
-                        'role' => 'user',
-                    ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'sync' => [
+                    'commitee_id' => 2,
+                    'matricule' => 'qjx212',
+                    'role' => 'user',
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -268,17 +238,14 @@ class InputTest extends TestCase
     {
         $this->input->sync('commitees', 6);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'sync' => 6
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'sync' => 6
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -286,17 +253,14 @@ class InputTest extends TestCase
     {
         $this->input->sync('commitees', 6, 13);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'sync' => [6, 13]
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'sync' => [6, 13]
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -304,17 +268,14 @@ class InputTest extends TestCase
     {
         $this->input->syncWithoutDetaching('commitees', 6, 13);
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'commitees' => [
-                    'syncWithoutDetaching' => [6, 13]
-                ]
-            ],
-            $this->input->toArray()
-        );
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'commitees' => [
+                'syncWithoutDetaching' => [6, 13]
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -336,32 +297,29 @@ class InputTest extends TestCase
                 ->connect('commitee', 1),
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'mandates' => [
-                    'upsert' => [
-                        [
-                            'mandateDefinition' => ['connect' => 1],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 960,
-                            'label' => 'Representant syndical',
-                            'id' => 3,
-                        ],
-                        [
-                            'mandateDefinition' => ['connect' => 2],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 1440,
-                            'label' => 'Elu titulaire',
-                            'id' => 4,
-                        ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'mandates' => [
+                'upsert' => [
+                    [
+                        'mandateDefinition' => ['connect' => 1],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 960,
+                        'label' => 'Representant syndical',
+                        'id' => 3,
+                    ],
+                    [
+                        'mandateDefinition' => ['connect' => 2],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 1440,
+                        'label' => 'Elu titulaire',
+                        'id' => 4,
                     ]
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -383,32 +341,29 @@ class InputTest extends TestCase
                 ->connect('commitee', 1),
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'mandates' => [
-                    'update' => [
-                        [
-                            'mandateDefinition' => ['connect' => 1],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 960,
-                            'label' => 'Representant syndical',
-                            'id' => 3,
-                        ],
-                        [
-                            'mandateDefinition' => ['connect' => 2],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 1440,
-                            'label' => 'Elu titulaire',
-                            'id' => 4,
-                        ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'mandates' => [
+                'update' => [
+                    [
+                        'mandateDefinition' => ['connect' => 1],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 960,
+                        'label' => 'Representant syndical',
+                        'id' => 3,
+                    ],
+                    [
+                        'mandateDefinition' => ['connect' => 2],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 1440,
+                        'label' => 'Elu titulaire',
+                        'id' => 4,
                     ]
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 
     /** @test */
@@ -424,29 +379,26 @@ class InputTest extends TestCase
                 ->connect('commitee', 1),
         );
 
-        $this->assertEquals(
-            [
-                'firstname' => 'Anita',
-                'lastname' => 'Badnews',
-                'email' => 'abadnews@gmail.com',
-                'mandates' => [
-                    'create' => [
-                        [
-                            'mandateDefinition' => ['connect' => 1],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 960,
-                            'label' => 'Representant syndical'
-                        ],
-                        [
-                            'mandateDefinition' => ['connect' => 2],
-                            'commitee' => ['connect' => 1],
-                            'credit' => 1440,
-                            'label' => 'Elu titulaire'
-                        ]
+        $this->assertEquals([
+            'firstname' => 'Anita',
+            'lastname' => 'Badnews',
+            'email' => 'abadnews@gmail.com',
+            'mandates' => [
+                'create' => [
+                    [
+                        'mandateDefinition' => ['connect' => 1],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 960,
+                        'label' => 'Representant syndical'
+                    ],
+                    [
+                        'mandateDefinition' => ['connect' => 2],
+                        'commitee' => ['connect' => 1],
+                        'credit' => 1440,
+                        'label' => 'Elu titulaire'
                     ]
                 ]
-            ],
-            $this->input->toArray()
-        );
+            ]
+        ], $this->input->toArray());
     }
 }
