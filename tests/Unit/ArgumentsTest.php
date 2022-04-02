@@ -3,7 +3,7 @@
 namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Jdefez\LaravelGraphql\QueryBuilder\Arguments;
-use Jdefez\LaravelGraphql\tests\TestCase;
+use Jdefez\LaravelGraphql\Tests\TestCase;
 
 class ArgumentsTest extends TestCase
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\tests\Unit;
+namespace Jdefez\LaravelGraphql\Tests\Unit;
 
-use Jdefez\LaravelGraphql\Facades\Graphql;
+// use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 use Jdefez\LaravelGraphql\tests\TestCase;
 
@@ -11,7 +11,7 @@ class GraphqlQueryBuilderTest extends TestCase
     /** @test */
     public function it_can_instanciate_a_query_builder()
     {
-        return $this->assertInstanceOf(Builder::class, Graphql::query());
+        return $this->assertInstanceOf(Builder::class, Builder::query());
     }
 
     /** @test */
@@ -28,7 +28,7 @@ class GraphqlQueryBuilderTest extends TestCase
 
         $this->assertEquals(
             'query { user(id: 1) { email name id }}',
-            $query->toString()
+            $query->toString(true)
         );
     }
 
@@ -41,8 +41,7 @@ class GraphqlQueryBuilderTest extends TestCase
             ->city();
 
         $query = Builder::query()
-            ->user(
-                ['id' => 1],
+            ->user(['id' => 1],
                 fn (Builder $user) => $user
                     ->email()
                     ->name()
@@ -52,8 +51,8 @@ class GraphqlQueryBuilderTest extends TestCase
             );
 
         $this->assertEquals(
-            'query { user(id: 1) { email name id } addresses(trashed: WITH) { street city zipcode }}',
-            $query->toString()
+            'query { user(id: 1) { email name id } addresses(trashed: WITH) { zipcode street city }}',
+            $query->toString(true)
         );
     }
 
@@ -71,7 +70,7 @@ class GraphqlQueryBuilderTest extends TestCase
 
         $this->assertEquals(
             'mutation($name: String!, $email: String!) { createUser(name: $name, email: $email) { name email }}',
-            $query->toString()
+            $query->toString(true)
         );
     }
 }

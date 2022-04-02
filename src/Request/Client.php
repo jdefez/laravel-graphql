@@ -8,30 +8,21 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\Inputs\Inputable;
 use Jdefez\LaravelGraphql\QueryBuilder\Buildable;
+use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 
-class Client implements Requestable
+class Client
 {
-    private ?string $api_token = null;
-
-    private string $api_url;
-
     protected ?PendingRequest $http = null;
 
     protected bool $debug = false;
 
-    public function __construct(string $api_url)
-    {
-        $this->api_url = $api_url;
+    public function __construct(
+        public string $api_url,
+        private ?string $api_token = null,
+    ) {
     }
 
-    public function setToken(string $token): Requestable
-    {
-        $this->api_token = $token;
-
-        return $this;
-    }
-
-    public function setDebug(): Requestable
+    public function setDebug(): static
     {
         $this->debug = true;
 
@@ -41,23 +32,9 @@ class Client implements Requestable
     /**
      * @throws RequestException
      */
-    public function get(Buildable|string $query, ?Inputable $variables = null): Response
+    public function post(Builder|string $query, array $variables = null): Response
     {
-        if ($query instanceof Buildable) {
-            $query = $query->toString();
-        }
-
-        return $this->http()
-            ->get($this->api_url, compact('query', 'variables'))
-            ->throw();
-    }
-
-    /**
-     * @throws RequestException
-     */
-    public function post(Buildable|string $query, Inputable $variables = null): Response
-    {
-        if ($query instanceof Buildable) {
+        if ($query instanceof Builder) {
             $query = $query->toString();
         }
 

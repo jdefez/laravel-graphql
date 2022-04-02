@@ -2,7 +2,7 @@
 
 namespace Jdefez\LaravelGraphql\QueryBuilder;
 
-class Builder implements Buildable
+class Builder
 {
     public ?string $name = null;
 
@@ -12,11 +12,9 @@ class Builder implements Buildable
 
     protected ?Builder $parent = null;
 
-    public function __construct(?string $name = null, ?array $arguments = null)
+    protected function __construct(?string $name = null, ?array $arguments = null)
     {
-        if ($name) {
-            $this->name = $name;
-        }
+        $this->name = $name;
 
         if ($arguments) {
             $this->setArguments($arguments);
@@ -28,17 +26,17 @@ class Builder implements Buildable
         return new self('query');
     }
 
-    public static function mutation(?array $arguments = null): Builder
+    public static function mutation(?array $arguments = null): static
     {
         return new self('mutation', $arguments);
     }
 
-    public static function make(?array $arguments = null): Builder
+    public static function make(?array $arguments = null): static
     {
         return new self(null, $arguments);
     }
 
-    public function __call(string $name, $arguments = null): Builder
+    public function __call(string $name, $arguments = null): static
     {
         $builder = $this->extractBuilder($arguments);
 
@@ -60,7 +58,7 @@ class Builder implements Buildable
         return $this;
     }
 
-    public function toString(bool $ugglify = true): string
+    public function toString(bool $ugglify = false): string
     {
         $return = '';
 
@@ -92,22 +90,22 @@ class Builder implements Buildable
 
     public function dump(): string
     {
-        return $this->toString(false);
+        return $this->toString();
     }
 
     public function __toString(): string
     {
-        return $this->toString();
+        return $this->toString(ugglify: true);
     }
 
-    protected function addField(Builder $field): Builder
+    protected function addField(Builder $field): static
     {
         array_push($this->fields, $field);
 
         return $this;
     }
 
-    protected function extractBuilder(?array &$arguments = null): ?Builder
+    protected function extractBuilder(?array &$arguments = null): ?static
     {
         $builder = null;
         if (! empty($arguments)
@@ -137,7 +135,7 @@ class Builder implements Buildable
         return $callback;
     }
 
-    protected function setArguments(array $arguments): Builder
+    protected function setArguments(array $arguments): static
     {
         $this->arguments = new Arguments($arguments);
 

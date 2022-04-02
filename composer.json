@@ -7,15 +7,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Jdefez\\LaravelGraphql\\": "src",
-            "Jdefez\\LaravelGraphql\\tests\\": "tests",
-            "Jdefez\\LaravelGraphql\\examples\\": "examples"
+            "Jdefez\\LaravelGraphql\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jdefez\\LaravelGraphql\\tests\\": "tests",
-            "Jdefez\\LaravelGraphql\\examples\\": "examples"
+            "Jdefez\\LaravelGraphql\\Tests\\": "tests"
         }
     },
     "authors": [
@@ -34,14 +31,6 @@
         "orchestra/testbench": "^6.20"
     },
     "extra": {
-        "laravel": {
-            "providers": [
-                "Jdefez\\LaravelGraphql\\GraphqlServiceProvider"
-            ],
-            "aliases": {
-                "Graphql": "Jdefez\\LaravelGraphql\\Facades\\Graphql"
-            }
-        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

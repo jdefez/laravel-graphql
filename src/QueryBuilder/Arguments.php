@@ -6,15 +6,13 @@ use Illuminate\Support\Str;
 
 class Arguments
 {
-    protected array $values = [];
-
     protected array $scalars = [
         'String', 'Int', 'Float', 'Boolean', 'ID'
     ];
 
-    public function __construct(array $values)
-    {
-        $this->values = $values;
+    public function __construct(
+        protected array $values
+    ) {
     }
 
     public function toString(): string
@@ -22,7 +20,7 @@ class Arguments
         $return = [];
         foreach ($this->values as $key => $value) {
             if (is_array($value)) {
-                if ($this->isAssoc($value)) {
+                if (!array_is_list($value)) {
                     $value = $this->assocToString($value);
                 } else {
                     $value = $this->sequentialToString($value);
@@ -55,7 +53,7 @@ class Arguments
         return '[' . implode(', ', $values) . ']';
     }
 
-    protected function addQuote($value)
+    protected function addQuote($value): string
     {
         if ($value
             && is_string($value)
@@ -69,15 +67,6 @@ class Arguments
         return $value;
     }
 
-    protected function isAssoc(array $array): bool
-    {
-        if ([] === $array) {
-            return false;
-        }
-
-        return array_keys($array) !== range(0, count($array) - 1);
-    }
-
     protected function isScalar(string $type): bool
     {
         return Str::contains($type, $this->scalars);
@@ -87,7 +76,7 @@ class Arguments
     {
         $letter = substr($string, 0, 1);
 
-        return ! empty(Str::of($letter)->match('/[a-zA-Z]/')->__toString())
+        return ! empty((string) Str::of($letter)->match('/[a-zA-Z]/'))
             && self::isUpperCase($letter);
     }
 
