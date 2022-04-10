@@ -67,6 +67,7 @@ class GraphqlRequestTest extends TestCase
         $this->markTestIncomplete('todo implement');
     }
 
+
     private function httpFake($responseBody, int $responseCode = 200)
     {
         Http::fake([

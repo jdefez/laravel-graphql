@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\Tests\Unit;
+namespace Jdefez\LaravelGraphql\tests\Unit;
 
 // use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;

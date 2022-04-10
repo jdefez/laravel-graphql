@@ -7,7 +7,6 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\Inputs\Inputable;
-use Jdefez\LaravelGraphql\QueryBuilder\Buildable;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 
 class Client
@@ -32,11 +31,15 @@ class Client
     /**
      * @throws RequestException
      */
-    public function post(Builder|string $query, array $variables = null): Response
+    public function post(Builder|string $query, ?Inputable $input = null): Response
     {
         if ($query instanceof Builder) {
             $query = $query->toString();
         }
+
+        $variables = [
+            'input' => $input ? $input->toArray() : null,
+        ];
 
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
@@ -45,7 +48,7 @@ class Client
 
     private function http(): PendingRequest
     {
-        if (! $this->http) {
+        if (!$this->http) {
             $this->http = Http::withOptions([
                 'debug' => $this->debug,
             ])->acceptJson();
