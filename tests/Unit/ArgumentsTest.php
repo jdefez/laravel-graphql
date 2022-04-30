@@ -1,51 +1,57 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\tests\Unit;
+namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Jdefez\LaravelGraphql\QueryBuilder\Arguments;
+use Jdefez\LaravelGraphql\QueryBuilder\Unquoted;
 use Jdefez\LaravelGraphql\Tests\TestCase;
 
 class ArgumentsTest extends TestCase
 {
     /** @test */
-    public function it_renders_dates_in_assoc_arrays()
+    public function it_handles_deep_nested_arguments(): void
     {
-        $args = new Arguments([
-            'updated_at' => [
-                'from' => '2021-08-06',
-                'to' => '2021-08-07'
-            ],
-        ]);
+        $this->assertEquals(
+            '(filter: {code: {eq: "FR"}})',
+            (string) new Arguments([
+                'filter' => [
+                    'code' => [
+                        'eq' => 'FR'
+                    ]
+                ]
+            ])
+        );
+    }
 
+    /** @test */
+    public function it_renders_dates_in_assoc_arrays(): void
+    {
         $this->assertEquals(
             '(updated_at: {from: "2021-08-06", to: "2021-08-07"})',
-            $args->toString()
+            (string) new Arguments([
+                'updated_at' => [
+                    'from' => '2021-08-06',
+                    'to' => '2021-08-07'
+                ],
+            ])
         );
     }
 
     /** @test */
-    public function it_renders_custom_type_arguments()
+    public function it_renders_arguments_marked_as_unquoted(): void
     {
-        $args = new Arguments([
-            'trashed' => 'WITH',
-        ]);
-
         $this->assertEquals(
             '(trashed: WITH)',
-            $args->toString()
+            (string) new Arguments(['trashed' => new Unquoted('WITH')])
         );
     }
 
     /** @test */
-    public function it_renders_scalars()
+    public function it_renders_scalars(): void
     {
-        $args = new Arguments([
-            'myBoolean' => 'Boolean'
-        ]);
-
         $this->assertEquals(
             '(myBoolean: Boolean)',
-            $args->toString()
+            (string) new Arguments(['myBoolean' => 'Boolean'])
         );
     }
 }

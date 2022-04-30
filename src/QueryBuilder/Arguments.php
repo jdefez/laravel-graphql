@@ -11,55 +11,56 @@ class Arguments
     ];
 
     public function __construct(
-        protected array $values
+        protected ?array $values = null
     ) {
     }
 
-    public function toString(): string
+    public function __toString(): string
+    {
+        if (!$this->values) {
+            return '';
+        }
+
+        return '(' . implode(', ', $this->render($this->values)) . ')';
+    }
+
+    protected function render(array $arr): array
     {
         $return = [];
-        foreach ($this->values as $key => $value) {
+
+        foreach ($arr as $key => $value) {
             if (is_array($value)) {
-                if (!array_is_list($value)) {
-                    $value = $this->assocToString($value);
-                } else {
-                    $value = $this->sequentialToString($value);
+                $pattern = '%s: {%s}';
+
+                if (array_is_list($value)) {
+                    $pattern = '%s: [%s]';
                 }
+
+                $return[] = sprintf(
+                    $pattern,
+                    $key,
+                    implode(', ', $this->render($value))
+                );
             } else {
                 $value = $this->addQuote($value);
+
+                if (!is_int($key)) {
+                    $value = sprintf('%s: %s', $key, $value);
+                }
+
+                $return[] = $value;
             }
-
-            $return[] = sprintf('%s: %s', $key, $value);
         }
 
-        return '(' . implode(', ', $return) . ')';
-    }
-
-    protected function assocToString(array $array): string
-    {
-        $return = [];
-        foreach ($array as $key => $value) {
-            $return[] = sprintf('%s: %s', $key, $this->addQuote($value));
-        }
-
-        return '{' . implode(', ', $return) . '}';
-    }
-
-    protected function sequentialToString(array $array): string
-    {
-        $values = array_values($array);
-        $values = array_map(fn ($item) => $this->addQuote($item), $values);
-
-        return '[' . implode(', ', $values) . ']';
+        return $return;
     }
 
     protected function addQuote($value): string
     {
-        if ($value
-            && is_string($value)
+        if (!is_numeric($value)
             && !Str::of($value)->startsWith('$')
+            && !$value instanceof Unquoted
             && !$this->isScalar($value)
-            && !$this->isCustomType($value)
         ) {
             $value = '"' . $value . '"';
         }
@@ -70,14 +71,6 @@ class Arguments
     protected function isScalar(string $type): bool
     {
         return Str::contains($type, $this->scalars);
-    }
-
-    protected function isCustomType(string $string): bool
-    {
-        $letter = substr($string, 0, 1);
-
-        return ! empty((string) Str::of($letter)->match('/[a-zA-Z]/'))
-            && self::isUpperCase($letter);
     }
 
     public static function isUpperCase(string $string): bool
