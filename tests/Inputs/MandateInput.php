@@ -1,6 +1,6 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\tests\Inputs;
+namespace Jdefez\LaravelGraphql\Tests\Inputs;
 
 use Jdefez\LaravelGraphql\Inputs\BaseInput;
 use Jdefez\LaravelGraphql\Inputs\Inputable;

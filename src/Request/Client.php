@@ -34,7 +34,7 @@ class Client
     public function post(Builder|string $query, ?Inputable $input = null): Response
     {
         if ($query instanceof Builder) {
-            $query = $query->toString();
+            $query = (string) $query;
         }
 
         $variables = [

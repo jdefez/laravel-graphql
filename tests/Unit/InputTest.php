@@ -1,13 +1,13 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\tests\Unit;
+namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Jdefez\LaravelGraphql\Inputs\Inputable;
-use Jdefez\LaravelGraphql\tests\Inputs\CommiteeUserInput;
-use Jdefez\LaravelGraphql\tests\Inputs\MandateDefinitionInput;
-use Jdefez\LaravelGraphql\tests\Inputs\MandateInput;
-use Jdefez\LaravelGraphql\tests\Inputs\UserInput;
-use Jdefez\LaravelGraphql\tests\TestCase;
+use Jdefez\LaravelGraphql\Tests\Inputs\CommiteeUserInput;
+use Jdefez\LaravelGraphql\Tests\Inputs\MandateDefinitionInput;
+use Jdefez\LaravelGraphql\Tests\Inputs\MandateInput;
+use Jdefez\LaravelGraphql\Tests\Inputs\UserInput;
+use Jdefez\LaravelGraphql\Tests\TestCase;
 
 class InputTest extends TestCase
 {

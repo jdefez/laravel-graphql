@@ -4,39 +4,35 @@ namespace Jdefez\LaravelGraphql\QueryBuilder;
 
 class Builder
 {
-    public ?string $name = null;
-
     public array $fields = [];
 
-    public ?Arguments $arguments = null;
+    protected Arguments $arguments;
 
     protected ?Builder $parent = null;
 
-    protected function __construct(?string $name = null, ?array $arguments = null)
-    {
-        $this->name = $name;
-
-        if ($arguments) {
-            $this->setArguments($arguments);
-        }
+    final protected function __construct(
+        public ?string $name = null,
+        ?array $arguments = null
+    ) {
+        $this->arguments = new Arguments($arguments);
     }
 
     public static function query(): Builder
     {
-        return new self('query');
+        return new static('query');
     }
 
     public static function mutation(?array $arguments = null): static
     {
-        return new self('mutation', $arguments);
+        return new static('mutation', $arguments);
     }
 
     public static function make(?array $arguments = null): static
     {
-        return new self(null, $arguments);
+        return new static(null, $arguments);
     }
 
-    public function __call(string $name, $arguments = null): static
+    public function __call(string $name, array $arguments = null): static
     {
         $builder = $this->extractBuilder($arguments);
 
@@ -67,7 +63,7 @@ class Builder
             $return .= $this->indent($this->name, $depth);
 
             if ($this->hasArguments()) {
-                $return .= $this->arguments->toString();
+                $return .= (string) $this->arguments;
             }
 
             $return .= ' {' . PHP_EOL;
@@ -133,13 +129,6 @@ class Builder
         }
 
         return $callback;
-    }
-
-    protected function setArguments(array $arguments): static
-    {
-        $this->arguments = new Arguments($arguments);
-
-        return $this;
     }
 
     protected function indent(string $string, int $depth): string

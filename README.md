@@ -7,6 +7,9 @@ laravel based project.
 
 To build reusable GraphQL queries.
 
+todo: [!] use of Unquoted class to render arguments that should not be
+surrounded with quotes.
+
 ## A GraphQL input class
 
 Used along with your queries when creating models for example.

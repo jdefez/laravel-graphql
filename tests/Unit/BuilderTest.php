@@ -1,12 +1,13 @@
 <?php
 
-namespace Jdefez\LaravelGraphql\tests\Unit;
+namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 // use Jdefez\LaravelGraphql\Facades\Graphql;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
-use Jdefez\LaravelGraphql\tests\TestCase;
+use Jdefez\LaravelGraphql\Tests\TestCase;
+use Jdefez\LaravelGraphql\QueryBuilder\Unquoted;
 
-class GraphqlQueryBuilderTest extends TestCase
+class BuilderTest extends TestCase
 {
     /** @test */
     public function it_can_instanciate_a_query_builder()
@@ -35,7 +36,7 @@ class GraphqlQueryBuilderTest extends TestCase
     /** @test */
     public function it_can_build_query_using_a_sub_builder()
     {
-        $address_fields = Builder::make(['trashed' => 'WITH'])
+        $address_fields = Builder::make(['trashed' => new Unquoted('WITH')])
             ->zipcode()
             ->street()
             ->city();
