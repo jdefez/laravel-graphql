@@ -3,6 +3,7 @@
 namespace Jdefez\LaravelGraphql\Tests\Unit;
 
 use Illuminate\Http\Client\Request;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 use Jdefez\LaravelGraphql\Request\Client;
@@ -11,6 +12,7 @@ use Jdefez\LaravelGraphql\Tests\TestCase;
 class ClientTest extends TestCase
 {
     // public string $api_url = 'https://countries.trevorblades.com/';
+
     public string $api_url = 'localhost';
 
     private Client $client;
@@ -22,12 +24,36 @@ class ClientTest extends TestCase
         $this->client = new Client($this->api_url);
     }
 
+    // todo: feature it handles file upload
+
     /**
      * @test
      */
     public function it_handles_validation_exception(): void
     {
-        $this->markTestIncomplete('todo implement');
+        $this->httpFake([
+            'errors' => [
+                (object) [
+                    "message" => 'Cannot query field "names" on type "Country". Did you mean "name" or "states"?',
+                    "extensions" => [
+                        "code" => "GRAPHQL_VALIDATION_FAILED"
+                    ]
+                ]
+            ]
+        ], 400);
+
+        $query = Builder::query()
+            ->countries(
+                ['filter' => ['code' => ['eq' => 'FR']]],
+                fn (Builder $country) => $country
+                    ->names()
+            );
+
+        try {
+            $this->client->post($query);
+        } catch (RequestException $e) {
+            $this->assertNotEmpty($this->client->errors);
+        }
     }
 
     /**
@@ -52,7 +78,8 @@ class ClientTest extends TestCase
         ]);
 
         $query = Builder::query()
-            ->countries(['filter' => ['code' => ['eq' => 'FR']]],
+            ->countries(
+                ['filter' => ['code' => ['eq' => 'FR']]],
                 fn (Builder $country) => $country
                     ->name()
             );

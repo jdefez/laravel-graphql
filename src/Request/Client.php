@@ -15,6 +15,8 @@ class Client
 
     protected bool $debug = false;
 
+    public array $errors = [];
+
     public function __construct(
         public string $api_url,
         private ?string $api_token = null,
@@ -43,7 +45,15 @@ class Client
 
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
-            ->throw();
+            ->throw(function ($response) {
+                $output = $response->object();
+
+                if (property_exists($output, 'errors')) {
+                    $this->errors = collect($output->errors)
+                        ->pluck('message')
+                        ->toArray();
+                }
+            });
     }
 
     private function http(): PendingRequest
