@@ -12,11 +12,11 @@ class ArgumentsTest extends TestCase
     public function it_handles_deep_nested_arguments(): void
     {
         $this->assertEquals(
-            '(filter: {code: {eq: "FR"}})',
+            '(filter: {code: {in: ["FR", "GB"]}})',
             (string) new Arguments([
                 'filter' => [
                     'code' => [
-                        'eq' => 'FR'
+                        'in' => ['FR', 'GB']
                     ]
                 ]
             ])

@@ -13,21 +13,12 @@ class Client
 {
     protected ?PendingRequest $http = null;
 
-    protected bool $debug = false;
-
     public array $errors = [];
 
     public function __construct(
         public string $api_url,
         private ?string $api_token = null,
     ) {
-    }
-
-    public function setDebug(): static
-    {
-        $this->debug = true;
-
-        return $this;
     }
 
     /**
@@ -45,7 +36,7 @@ class Client
 
         return $this->http()
             ->post($this->api_url, compact('query', 'variables'))
-            ->throw(function ($response) {
+            ->throw(function (Response $response) {
                 $output = $response->object();
 
                 if (property_exists($output, 'errors')) {
@@ -59,9 +50,7 @@ class Client
     private function http(): PendingRequest
     {
         if (!$this->http) {
-            $this->http = Http::withOptions([
-                'debug' => $this->debug,
-            ])->acceptJson();
+            $this->http = Http::acceptJson();
 
             if ($this->api_token) {
                 $this->http->withToken($this->api_token);

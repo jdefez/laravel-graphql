@@ -7,12 +7,11 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Jdefez\LaravelGraphql\QueryBuilder\Builder;
 use Jdefez\LaravelGraphql\Request\Client;
+use Jdefez\LaravelGraphql\Tests\Inputs\UserInput;
 use Jdefez\LaravelGraphql\Tests\TestCase;
 
 class ClientTest extends TestCase
 {
-    // public string $api_url = 'https://countries.trevorblades.com/';
-
     public string $api_url = 'localhost';
 
     private Client $client;
@@ -21,12 +20,12 @@ class ClientTest extends TestCase
     {
         parent::setUp();
 
-        $this->client = new Client($this->api_url);
+        $this->client = new Client($this->api_url, 'apitoken');
     }
 
-    // todo: feature it handles file upload
-
     /**
+     * The client handles request exceptions. and it's property errors is filled
+     *
      * @test
      */
     public function it_handles_validation_exception(): void
@@ -45,26 +44,56 @@ class ClientTest extends TestCase
         $query = Builder::query()
             ->countries(
                 ['filter' => ['code' => ['eq' => 'FR']]],
-                fn (Builder $country) => $country
-                    ->names()
+                fn (Builder $country) => $country->names()
             );
 
         try {
             $this->client->post($query);
         } catch (RequestException $e) {
             $this->assertNotEmpty($this->client->errors);
+            $this->assertContains(
+                'Cannot query field "names" on type "Country". Did you mean "name" or "states"?',
+                $this->client->errors
+            );
         }
     }
 
     /**
+     * the client object uses the provided input parameter
+     *
      * @test
      */
     public function it_handles_input(): void
     {
-        $this->markTestIncomplete('todo implement');
+        $this->httpFake([
+            'data' => [
+                'insertUser' => [
+                    'id' => 12
+                ]
+            ]
+        ]);
+
+        $query = Builder::mutation(['$input' => 'UserInput'])
+            ->insertUser(fn (Builder $user) => $user->id());
+
+        $input = new UserInput(
+            firstname: 'Anita',
+            lastname: 'Badnews',
+            email: 'abadnews@gmail.com'
+        );
+
+        $this->client->post($query, $input);
+
+        Http::assertSent(function (Request $request) use ($query, $input) {
+            return $request->url() === $this->api_url
+                && $request['query'] === (string) $query
+                && $request['variables'] === ['input' => $input->toArray()];
+        });
     }
 
     /**
+     * the client object can make a simple request
+     *
      * @test
      */
     public function it_handles_request(): void

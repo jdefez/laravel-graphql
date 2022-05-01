@@ -72,9 +72,4 @@ class Arguments
     {
         return Str::contains($type, $this->scalars);
     }
-
-    public static function isUpperCase(string $string): bool
-    {
-        return strtoupper($string) === $string;
-    }
 }

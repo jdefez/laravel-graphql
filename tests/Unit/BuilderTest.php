@@ -15,6 +15,8 @@ class BuilderTest extends TestCase
         return $this->assertInstanceOf(Builder::class, Builder::query());
     }
 
+    // todo: test dump method
+
     /** @test */
     public function it_can_build_a_query()
     {
@@ -42,7 +44,8 @@ class BuilderTest extends TestCase
             ->city();
 
         $query = Builder::query()
-            ->user(['id' => 1],
+            ->user(
+                ['id' => 1],
                 fn (Builder $user) => $user
                     ->email()
                     ->name()
