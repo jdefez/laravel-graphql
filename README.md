@@ -3,7 +3,7 @@
 It consist of a set of Graphql utility classes to handle graphql request in a
 laravel based project.
 
-## A GraphQL query builder
+## The Builder class
 
 The purpose of this class is to build GraphQL queries through reusable php
 classes.file:///home/jean/Code/laravel-graphql/build/coverage/Graphql.php.html
@@ -85,13 +85,35 @@ echo (string) $query;
 // => query { users(filter: {firstname: {eq: "bob"}}) { firstname lastname email id }}
 ```
 
-todo: [!] use of Unquoted class to render arguments that should not be
-surrounded with quotes.
+Most of the time this class will guess which of the parameters should not be
+quoted but constants and custom types can be diffcult to detect. You can use a
+`Unquoted` class to make sure your parameter is not quoted.
+
+```php
+
+use Jdefez\LaravelGraphql\QueryBuilder\Builder;
+use Jdefez\LaravelGraphql\QueryBuilder\Unquoted;
+
+$query = Builder::query()
+    ->users(
+        ['with' => new Unquoted('TRASHED')],
+        fn (Builder $user) => $user
+            ->firstname()
+            ->lastname()
+            ->email()
+            ->id()
+    );
+
+echo (string) $query;
+
+// => query { users(with: TRASHED}) { firstname lastname email id }}
+```
 
 ## A GraphQL input class
 
-Used along with your queries when creating models for example.
+Used along with your mutations when creating models Inputs is a companion class to easily represent an input relations.
+User.createAddresses for example.
 
-## A Client
+## A Client class
 
 
